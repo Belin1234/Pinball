@@ -23,5 +23,6 @@ public:
 private:
 
 	bool debug;
-	
+	b2World* world;
+
 };

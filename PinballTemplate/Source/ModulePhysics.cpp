@@ -22,12 +22,19 @@ ModulePhysics::~ModulePhysics()
 bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
+
+// Creates the world and its gravity
+
+	b2Vec2 gravity(0.f, 10.f);
+	world = new b2World(gravity);
 	
 	return true;
 }
 
 update_status ModulePhysics::PreUpdate()
 {
+	// Every update the physics world calculates positions and rotations
+	world->Step(1.0f / 60.0f, 8, 3);
 
 	return UPDATE_CONTINUE;
 }

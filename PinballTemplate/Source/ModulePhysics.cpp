@@ -54,6 +54,8 @@ update_status ModulePhysics::PostUpdate()
 		return UPDATE_CONTINUE;
 	}
 
+
+
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
 	/*for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -133,6 +135,69 @@ update_status ModulePhysics::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
+PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+{
+	b2BodyDef body;
+	body.type = b2_dynamicBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2CircleShape shape;
+	shape.m_radius = PIXEL_TO_METERS(radius);
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.density = 1.0f;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+
+	return pbody;
+}
+
+void ModulePhysics::CreateRectangle(int x, int y, int width, int height)
+{
+	b2BodyDef boxBodyDef;
+	boxBodyDef.type = b2_dynamicBody;
+	boxBodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&boxBodyDef);
+
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(PIXEL_TO_METERS(width), PIXEL_TO_METERS(height));
+
+	b2FixtureDef boxFixture;
+	boxFixture.shape = &boxShape;
+	boxFixture.density = 1.0f;
+
+	b->CreateFixture(&boxFixture);
+}
+
+void ModulePhysics::CreateChain(int x, int y, const int* points, int size)
+{
+	b2Vec2* vertices = new b2Vec2[size / 2];
+	for (int i = 0; i < size / 2; ++i) {
+		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
+	}
+
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* body = world->CreateBody(&bodyDef);
+
+	b2ChainShape chainShape;
+	chainShape.CreateLoop(vertices, size / 2);
+
+	delete[] vertices;
+
+	b2FixtureDef fixture;
+	fixture.shape = &chainShape;
+	fixture.density = 1.0f;
+
+	body->CreateFixture(&fixture);
+}
 
 // Called before quitting
 bool ModulePhysics::CleanUp()
@@ -143,4 +208,11 @@ bool ModulePhysics::CleanUp()
 	
 
 	return true;
+}
+
+void PhysBody::GetPosition(int& x, int& y) const
+{
+	b2Vec2 pos = body->GetPosition();
+	x = METERS_TO_PIXELS(pos.x);
+	y = METERS_TO_PIXELS(pos.y);
 }

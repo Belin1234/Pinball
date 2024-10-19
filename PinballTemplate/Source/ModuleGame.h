@@ -25,6 +25,8 @@ public:
 public:
 
 	Texture2D fondo;
+	Texture2D pokeball;
+	
 
 	std::vector<PhysBody*> bodies;
 	

@@ -39,6 +39,8 @@ bool ModuleWindow::Init()
     SetConfigFlags(flags);
 	InitWindow(width, height, TITLE);
 
+	ToggleFullscreen();
+
 	return ret;
 }
 

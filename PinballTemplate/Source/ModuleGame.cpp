@@ -22,6 +22,8 @@ bool ModuleGame::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	fondo = LoadTexture("Assets/Fondo.png");
+	pokeball = LoadTexture("Assets/pokeball.png");
+	
 
 	return ret;
 }
@@ -43,15 +45,20 @@ update_status ModuleGame::Update()
 	if (IsKeyPressed(KEY_ONE))
 	{
 		bodies.push_back(App->physics->CreateCircle(GetMouseX(), GetMouseY(), 5));
+
 	}
 
-	//for each (PhysBody * body in bodies)
-	//{
-	//	int x, y;
-	//	body->GetPosition(x, y);
+	
 
-	//	App->renderer->Draw(circle, x - circle.width * 0.5f, y - circle.height * 0.5f);
-	//}
+	for each (PhysBody * body in bodies)
+	{
+		int x, y;
+		body->GetPosition(x, y);
+		float degrees = body->GetRotation() * RAD2DEG;
+		/*Blit(pokeball, x, y, nullptr, degrees);*/
+
+		App->renderer->Draw(pokeball, x - pokeball.width * 0.5f, y - pokeball.height * 0.5f);
+	}
 
 	return UPDATE_CONTINUE;
 }

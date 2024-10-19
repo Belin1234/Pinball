@@ -25,8 +25,15 @@ bool ModulePhysics::Start()
 	LOG("Creating Physics 2D environment");
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
+	
+	//Puntos donde empieza el pinball
 
-	int points[134] = {
+	int x = 5;
+	int y = 30;
+
+	// Crea el contorno del pinball
+
+	int perimeter[134] = {
 			0, 0,
 			0, 280,
 			56, 280,
@@ -96,36 +103,162 @@ bool ModulePhysics::Start()
 			192, 0,
 	};
 
-
-	int x = 5;
-	int y = 30;
+	CreateEdge(x, y, perimeter, 134);
 
 
-	b2Vec2* vertices = new b2Vec2[134 / 2];
-	for (int i = 0; i < 134 / 2; ++i) {
-		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
-	}
+	// Crea la colision de arriba
 
-	b2BodyDef bodyDef;
-	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-	b2Body* body = world->CreateBody(&bodyDef);
-
-
-	b2EdgeShape edgeShape;
-	b2FixtureDef fixture;
-	fixture.shape = &edgeShape;
-	fixture.density = 1.0f;
-
-
-	for (int i = 0; i < (134 / 2) - 1; ++i) {
-		
-		edgeShape.SetTwoSided(vertices[i], vertices[i + 1]);
-		body->CreateFixture(&fixture);
-	}
-
-	// Liberar memoria
-	delete[] vertices;
+	int upper_collision[24] = {
+	39, 42,
+	52, 35,
+	64, 31,
+	79, 29,
+	94, 30,
+	105, 34,
+	117, 39,
+	105, 29,
+	89, 23,
+	75, 23,
+	60, 27,
+	49, 33,
 	
+	};
+
+	CreateEdge(x, y, upper_collision, 24);
+
+
+	// Crea la colision pequeña de arriba a la izquierda
+
+	int left_little_collision[8] = {
+	67, 63,
+	71, 61,
+	71, 47,
+	67, 49
+	};
+
+	CreateEdge(x, y, left_little_collision, 8);
+
+
+	// Crea la colision pequeña de arriba a la derecha
+
+	int right_little_collision[8] = {
+		88, 57,
+		94, 57,
+		94, 43,
+		88, 43
+	};
+
+	CreateEdge(x, y, right_little_collision, 8);
+
+
+	// Crea la colision de Staryu
+
+	int staryu_collision[32] = {
+	66, 124,
+	65, 116,
+	61, 110,
+	54, 102,
+	48, 94,
+	47, 83,
+	50, 76,
+	50, 65,
+	45, 75,
+	43, 83,
+	43, 95,
+	43, 108,
+	45, 117,
+	49, 125,
+	55, 129,
+	61, 129
+	};
+
+	CreateEdge(x, y, staryu_collision, 32);
+
+
+	// Crea la colision de arriba a la izquierda
+
+	int upper_left_collision[26] = {
+	40, 150,
+	34, 143,
+	28, 130,
+	25, 116,
+	24, 104,
+	25, 95,
+	29, 85,
+	31, 86,
+	29, 97,
+	29, 106,
+	32, 121,
+	36, 132,
+	46, 145
+	};
+
+	CreateEdge(x, y, upper_left_collision, 26);
+
+
+	// Crea la colision de arriba a la derecha
+
+	int upper_right_collision[54] = {
+	105, 117,
+	107, 104,
+	109, 91,
+	110, 81,
+	110, 48,
+	121, 56,
+	127, 63,
+	132, 72,
+	135, 82,
+	135, 113,
+	133, 126,
+	129, 137,
+	125, 146,
+	121, 150,
+	115, 144,
+	121, 136,
+	127, 124,
+	129, 117,
+	131, 105,
+	131, 87,
+	127, 82,
+	121, 82,
+	117, 88,
+	116, 95,
+	116, 106,
+	113, 114,
+	110, 121
+	};
+
+	CreateEdge(x, y, upper_right_collision, 54);
+
+
+	// Crea la colision de abajo a la izquierda
+
+	int down_left_collision[12] = {
+	52, 261,
+	57, 254,
+	24, 232,
+	24, 207,
+	20, 207,
+	20, 240
+	};
+
+	CreateEdge(x, y, down_left_collision, 12);
+
+
+	// Crea la colision de abajo a la derecha
+
+	int down_right_collision[12] = {
+	140, 239,
+	140, 207,
+	136, 207,
+	136, 231,
+	104, 254,
+	107, 261
+	};
+
+	CreateEdge(x, y, down_right_collision, 12);
+
+
 	return true;
 }
 
@@ -213,7 +346,7 @@ update_status ModulePhysics::PostUpdate()
 				break;
 
 				// Draw a single segment(edge) ----------------------------------
-				case b2Shape::e_edge:
+				/*case b2Shape::e_edge:
 				{
 					b2EdgeShape* shape = (b2EdgeShape*)f->GetShape();
 					b2Vec2 v1, v2;
@@ -222,7 +355,7 @@ update_status ModulePhysics::PostUpdate()
 					v1 = b->GetWorldPoint(shape->m_vertex1);
 					DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), BLUE);
 				}
-				break;
+				break;*/
 			}
 
 			
@@ -287,7 +420,6 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-
 	b2Body* b = world->CreateBody(&bodyDef);
 
 	b2ChainShape chainShape;
@@ -307,6 +439,39 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 	return pbody;
 }
 
+PhysBody* ModulePhysics::CreateEdge(int x, int y, const int* points, int size)
+{
+	b2Vec2* vertices = new b2Vec2[size / 2];
+	for (int i = 0; i < size / 2; ++i) {
+		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
+	}
+
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	b2Body* b = world->CreateBody(&bodyDef);
+
+	b2EdgeShape edgeShape;
+
+	b2FixtureDef fixture;
+	fixture.shape = &edgeShape;
+	fixture.density = 1.0f;
+
+
+	for (int i = 0; i < (134 / 2) - 1; ++i) {
+
+		edgeShape.SetTwoSided(vertices[i], vertices[i + 1]);
+		b->CreateFixture(&fixture);
+	}
+
+	delete[] vertices;
+
+	PhysBody* pbody = new PhysBody();
+	pbody->body = b;
+
+	return pbody;
+}
+
+
 // Called before quitting
 bool ModulePhysics::CleanUp()
 {
@@ -323,4 +488,10 @@ void PhysBody::GetPosition(int& x, int& y) const
 	b2Vec2 pos = body->GetPosition();
 	x = METERS_TO_PIXELS(pos.x);
 	y = METERS_TO_PIXELS(pos.y);
+}
+
+float PhysBody::GetRotation()
+{
+	return body->GetAngle();
+	
 }

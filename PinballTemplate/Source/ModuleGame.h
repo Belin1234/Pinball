@@ -24,7 +24,7 @@ public:
 
 public:
 
-	
+	Texture2D fondo;
 
 	std::vector<PhysBody*> bodies;
 	

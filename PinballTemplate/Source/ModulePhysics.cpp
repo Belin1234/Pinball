@@ -26,22 +26,105 @@ bool ModulePhysics::Start()
 
 	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
 
-	int x = SCREEN_WIDTH / 2;
-	int y = SCREEN_HEIGHT / 1.5f;
-	int diameter = SCREEN_WIDTH / 2;
+	int points[134] = {
+			0, 0,
+			0, 280,
+			56, 280,
+			56, 278,
+			21, 255,
+			7, 246,
+			7, 207,
+			10, 200,
+			16, 195,
+			23, 194,
+			23, 175,
+			25, 169,
+			28, 166,
+			20, 153,
+			16, 140,
+			13, 126,
+			11, 111,
+			10, 101,
+			9, 88,
+			9, 15,
+			12, 10,
+			17, 8,
+			22, 10,
+			26, 16,
+			26, 31,
+			35, 24,
+			46, 17,
+			59, 12,
+			73, 9,
+			99, 9,
+			113, 12,
+			127, 17,
+			138, 24,
+			148, 33,
+			157, 44,
+			166, 58,
+			171, 71,
+			174, 87,
+			174, 278,
+			160, 278,
+			160, 84,
+			157, 70,
+			152, 58,
+			144, 46,
+			136, 38,
+			143, 51,
+			148, 65,
+			151, 77,
+			151, 100,
+			149, 111,
+			147, 123,
+			145, 133,
+			143, 143,
+			139, 154,
+			131, 167,
+			135, 170,
+			137, 176,
+			137, 193,
+			144, 195,
+			150, 200,
+			153, 207,
+			153, 245,
+			139, 255,
+			105, 278,
+			105, 280,
+			192, 280,
+			192, 0,
+	};
 
-	b2BodyDef body;
-	body.type = b2_staticBody;
-	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
-	b2Body* b = world->CreateBody(&body);
+	int x = 5;
+	int y = 30;
 
-	b2CircleShape shape;
-	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
 
+	b2Vec2* vertices = new b2Vec2[134 / 2];
+	for (int i = 0; i < 134 / 2; ++i) {
+		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
+	}
+
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	b2Body* body = world->CreateBody(&bodyDef);
+
+
+	b2EdgeShape edgeShape;
 	b2FixtureDef fixture;
-	fixture.shape = &shape;
-	b->CreateFixture(&fixture);
+	fixture.shape = &edgeShape;
+	fixture.density = 1.0f;
+
+
+	for (int i = 0; i < (134 / 2) - 1; ++i) {
+		
+		edgeShape.SetTwoSided(vertices[i], vertices[i + 1]);
+		body->CreateFixture(&fixture);
+	}
+
+	// Liberar memoria
+	delete[] vertices;
 	
 	return true;
 }
@@ -73,7 +156,7 @@ update_status ModulePhysics::PostUpdate()
 
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
-	/*for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
 	{
 		for(b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
 		{
@@ -144,7 +227,7 @@ update_status ModulePhysics::PostUpdate()
 
 			
 		}
-	}//*/
+	}
 
 	
 	return UPDATE_CONTINUE;

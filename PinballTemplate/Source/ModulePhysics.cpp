@@ -33,7 +33,7 @@ bool ModulePhysics::Start()
 
 	// Crea el contorno del pinball
 
-	int perimeter[134] = {
+	int points[134] = {
 			0, 0,
 			0, 280,
 			56, 280,
@@ -103,7 +103,7 @@ bool ModulePhysics::Start()
 			192, 0,
 	};
 
-	CreateEdge(x, y, perimeter, 134);
+	CreateEdge(x, y, points, 134);
 
 
 	// Crea la colision de arriba
@@ -366,7 +366,7 @@ update_status ModulePhysics::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
-PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
+PhysBody* ModulePhysics::CreateCircle(int x, int y, float radius)
 {
 	b2BodyDef body;
 	body.type = b2_dynamicBody;

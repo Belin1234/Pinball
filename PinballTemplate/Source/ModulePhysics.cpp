@@ -8,9 +8,9 @@
 #include <math.h>
 
 
-
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	world = NULL;
 	debug = true;
 }
 
@@ -21,12 +21,27 @@ ModulePhysics::~ModulePhysics()
 
 bool ModulePhysics::Start()
 {
+
 	LOG("Creating Physics 2D environment");
 
-// Creates the world and its gravity
+	world = new b2World(b2Vec2(GRAVITY_X, -GRAVITY_Y));
 
-	b2Vec2 gravity(0.f, 10.f);
-	world = new b2World(gravity);
+	int x = SCREEN_WIDTH / 2;
+	int y = SCREEN_HEIGHT / 1.5f;
+	int diameter = SCREEN_WIDTH / 2;
+
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2CircleShape shape;
+	shape.m_radius = PIXEL_TO_METERS(diameter) * 0.5f;
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	b->CreateFixture(&fixture);
 	
 	return true;
 }
@@ -157,47 +172,51 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius)
 	return pbody;
 }
 
-void ModulePhysics::CreateRectangle(int x, int y, int width, int height)
-{
-	b2BodyDef boxBodyDef;
-	boxBodyDef.type = b2_dynamicBody;
-	boxBodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+//PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
+//{
+//	b2BodyDef boxBodyDef;
+//	boxBodyDef.type = b2_dynamicBody;
+//	boxBodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+//
+//	b2Body* b = world->CreateBody(&boxBodyDef);
+//
+//	b2PolygonShape boxShape;
+//	boxShape.SetAsBox(PIXEL_TO_METERS(width), PIXEL_TO_METERS(height));
+//
+//	b2FixtureDef boxFixture;
+//	boxFixture.shape = &boxShape;
+//	boxFixture.density = 1.0f;
+//
+//	b->CreateFixture(&boxFixture);
+//
+//	return b;
+//}
 
-	b2Body* b = world->CreateBody(&boxBodyDef);
-
-	b2PolygonShape boxShape;
-	boxShape.SetAsBox(PIXEL_TO_METERS(width), PIXEL_TO_METERS(height));
-
-	b2FixtureDef boxFixture;
-	boxFixture.shape = &boxShape;
-	boxFixture.density = 1.0f;
-
-	b->CreateFixture(&boxFixture);
-}
-
-void ModulePhysics::CreateChain(int x, int y, const int* points, int size)
-{
-	b2Vec2* vertices = new b2Vec2[size / 2];
-	for (int i = 0; i < size / 2; ++i) {
-		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
-	}
-
-	b2BodyDef bodyDef;
-	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-
-	b2Body* body = world->CreateBody(&bodyDef);
-
-	b2ChainShape chainShape;
-	chainShape.CreateLoop(vertices, size / 2);
-
-	delete[] vertices;
-
-	b2FixtureDef fixture;
-	fixture.shape = &chainShape;
-	fixture.density = 1.0f;
-
-	body->CreateFixture(&fixture);
-}
+//PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
+//{
+//	b2Vec2* vertices = new b2Vec2[size / 2];
+//	for (int i = 0; i < size / 2; ++i) {
+//		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
+//	}
+//
+//	b2BodyDef bodyDef;
+//	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+//
+//	b2Body* body = world->CreateBody(&bodyDef);
+//
+//	b2ChainShape chainShape;
+//	chainShape.CreateLoop(vertices, size / 2);
+//
+//	delete[] vertices;
+//
+//	b2FixtureDef fixture;
+//	fixture.shape = &chainShape;
+//	fixture.density = 1.0f;
+//
+//	body->CreateFixture(&fixture);
+//
+//	return body;
+//}
 
 // Called before quitting
 bool ModulePhysics::CleanUp()
@@ -205,7 +224,7 @@ bool ModulePhysics::CleanUp()
 	LOG("Destroying physics world");
 
 	// Delete the whole physics world!
-	
+	delete world;
 
 	return true;
 }

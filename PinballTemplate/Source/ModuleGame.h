@@ -25,4 +25,7 @@ public:
 public:
 
 	
+
+	std::vector<PhysBody*> bodies;
+	
 };

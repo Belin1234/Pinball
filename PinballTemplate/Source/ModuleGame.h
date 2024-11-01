@@ -21,13 +21,22 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
+	std::vector<PhysicEntity*> entities;
+
+	PhysBody* sensor;
+	bool sensed;
 
 	Texture2D fondo;
 	Texture2D pokeball;
-	
+
+	//uint32 bonus_fx;
+
+	vec2<int> ray;
+	bool ray_on;
 
 	std::vector<PhysBody*> bodies;
-	
+
 };

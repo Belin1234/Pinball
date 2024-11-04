@@ -138,7 +138,11 @@ void b2CollideEdgeAndCircle(b2Manifold* manifold,
 	
 	// Region AB
 	float den = b2Dot(e, e);
-	b2Assert(den > 0.0f);
+	if (den <= 0.0f)
+	{
+		// Si den es cero, significa que el vector e es nulo. Manejo del error aquí
+		return;
+	}
 	b2Vec2 P = (1.0f / den) * (u * A + v * B);
 	b2Vec2 d = Q - P;
 	float dd = b2Dot(d, d);

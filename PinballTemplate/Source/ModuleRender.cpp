@@ -54,10 +54,10 @@ update_status ModuleRender::PostUpdate()
 
     /*DrawText(TextFormat("Score: %08i", score), 400, 10, GetFontDefault(), 1, YELLOW);*/ // Cuando tengamos la fuente se puede incorporar de momento, DrawTextEx
 
-    // Draws Score
+    // Draw Score
     DrawTextEx(GetFontDefault(), TextFormat("Score: %08i", score), Vector2 { 300, 1 }, 30, 4, YELLOW);
 
-    // Draws Lives
+    // Draw Lives
     DrawTextEx(GetFontDefault(), TextFormat("Lives: %i", lives), Vector2{ 140, 1 }, 30, 4, RED);
 
     EndDrawing();
@@ -81,7 +81,7 @@ bool ModuleRender::Draw(Texture2D texture, int x, int y, const Rectangle* sectio
 {
     bool ret = true;
 
-    float scale = 4.0f;
+    float scale = 1.0f;
     Vector2 position = { (float)x, (float)y };
     Rectangle rect = { 0.f, 0.f, (float)texture.width, (float)texture.height };
 

@@ -31,6 +31,7 @@ public:
 
 	Texture2D fondo;
 	Texture2D pokeball;
+	Texture2D left_flip;
 
 	//uint32 bonus_fx;
 

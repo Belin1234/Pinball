@@ -34,7 +34,7 @@ class Pokeball : public PhysicEntity
 {
 public:
 	Pokeball(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateCircle(_x, _y, 5.4f), _listener)
+		: PhysicEntity(physics->CreateCircle(_x, _y, 5.4f * SCALE), _listener)
 		, texture(_texture)
 	{
 
@@ -45,12 +45,46 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
-		float scale = 1.0f;
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { position.x, position.y, (float)texture.width * scale, (float)texture.height * scale };
-		Vector2 origin = { (float)texture.width / 2.0f, (float)texture.height / 2.0f };
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+	}
+
+private:
+	Texture2D texture;
+
+};
+
+class Left_Flipper: public PhysicEntity
+{
+public:
+	static constexpr int left_flipper[12] = {
+	51, 260,
+	51, 254,
+	56, 253,
+	73, 266,
+	73, 268,
+	71, 269
+	};
+
+	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, left_flipper, 12), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override
+	{
+		
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { 188, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
 	}
 
 private:
@@ -73,8 +107,8 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-			Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
-			Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
+		Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
+		Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
 	}
 
 	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
@@ -163,12 +197,16 @@ bool ModuleGame::Start()
 
 	fondo = LoadTexture("Assets/Fondo.png");
 	pokeball = LoadTexture("Assets/pokeball.png");
+	left_flip = LoadTexture("Assets/leftFlipper.png");
 
 	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
 
 
 	// Sensor rectangular que me ralla
 	/*sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);*/
+
+
+	entities.emplace_back(new Left_Flipper(App->physics, 5, 30, this, left_flip));
 
 	return ret;
 }
@@ -189,7 +227,6 @@ update_status ModuleGame::Update()
 	//Rectangle source = { 0, 0, (float)fondo.width, (float)fondo.height }; // - Porque las coordenadas de OpenGL están invertidas
 	//Rectangle dest = { 0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT };
 	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
-
 
 	// TODO 4: Move all creation of bodies on 1,2,3 key press here in the scene
 	if (IsKeyPressed(KEY_ONE))
@@ -249,6 +286,7 @@ update_status ModuleGame::Update()
 		/*Blit(pokeball, x, y, nullptr, degrees);*/
 
 		App->renderer->Draw(pokeball, x - pokeball.width * 0.5f, y - pokeball.height * 0.5f);
+
 	}
 
 	return UPDATE_CONTINUE;

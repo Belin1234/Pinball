@@ -24,6 +24,9 @@ public:
 
 	Color background;
 	Rectangle camera;
-	float scale;
+	
+	Font MyFont;
+	int score;
+	int lives;
 
 };

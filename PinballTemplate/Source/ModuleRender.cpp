@@ -6,8 +6,9 @@
 
 ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-    background = RAYWHITE;
-
+    background = BLACK;
+    score = 0; // controlar el valor desde update de game desde score de game, hay que arreglarlo
+    lives = 3; // igual con lives
     camera.x = camera.y = 0;
     camera.width = SCREEN_WIDTH;
     camera.height = SCREEN_HEIGHT;
@@ -42,13 +43,6 @@ update_status ModuleRender::Update()
     // not processed until EndDrawing() is called
     BeginDrawing();
 
-    //float scaleX = (float)App->window->GetWidth() / camera.width;
-    //float scaleY = (float)App->window->GetHeight() / camera.height;
-    //scale = (scaleX < scaleY) ? scaleX : scaleY; // Mantiene la proporción para evitar distorsiones
-
-
-    /*ModuleWindow::GetWidth*/
-
     return UPDATE_CONTINUE;
 }
 
@@ -56,7 +50,15 @@ update_status ModuleRender::Update()
 update_status ModuleRender::PostUpdate()
 {
     // Draw everything in our batch!
-    DrawFPS(10, 10);
+    DrawFPS(10, 7);
+
+    /*DrawText(TextFormat("Score: %08i", score), 400, 10, GetFontDefault(), 1, YELLOW);*/ // Cuando tengamos la fuente se puede incorporar de momento, DrawTextEx
+
+    // Draws Score
+    DrawTextEx(GetFontDefault(), TextFormat("Score: %08i", score), Vector2 { 300, 1 }, 30, 4, YELLOW);
+
+    // Draws Lives
+    DrawTextEx(GetFontDefault(), TextFormat("Lives: %i", lives), Vector2{ 140, 1 }, 30, 4, RED);
 
     EndDrawing();
 

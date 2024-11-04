@@ -127,6 +127,7 @@ bool ModulePhysics::Start()
 	};
 
 	CreateEdge(x, y, upper_collision, 24);
+	
 
 
 	// Crea la colision pequeña de arriba a la izquierda
@@ -431,7 +432,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 {
 	b2Vec2* vertices = new b2Vec2[size / 2];
 	for (int i = 0; i < size / 2; ++i) {
-		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
+		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
 	}
 
 	b2BodyDef bodyDef;
@@ -459,7 +460,7 @@ PhysBody* ModulePhysics::CreateEdge(int x, int y, const int* points, int size)
 {
 	b2Vec2* vertices = new b2Vec2[size / 2];
 	for (int i = 0; i < size / 2; ++i) {
-		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2]), PIXEL_TO_METERS(points[i * 2 + 1]));
+		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
 	}
 
 	b2BodyDef bodyDef;

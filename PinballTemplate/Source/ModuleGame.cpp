@@ -25,8 +25,9 @@ public:
 		return 0;
 	}
 
-protected:
 	PhysBody* body;
+protected:
+	
 	Module* listener;
 };
 
@@ -42,6 +43,8 @@ public:
 
 	void Update() override
 	{
+
+		// he pensado de hacer aqui lo de cuando se pase del limite que respawnee
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
@@ -78,7 +81,7 @@ public:
 
 	void Update() override
 	{
-		
+		// he pensado de hacer aqui que cuando le des a la A se rote 
 		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 		Rectangle dest = { 188, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
@@ -92,11 +95,20 @@ private:
 
 };
 
-class Box : public PhysicEntity
+class Right_Flipper : public PhysicEntity
 {
 public:
-	Box(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener)
+	static constexpr int right_flipper[12] = {
+	109, 254,
+	103, 253,
+	87, 265,
+	87, 268,
+	89, 269,
+	109, 260
+	};
+
+	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, right_flipper, 12), _listener)
 		, texture(_texture)
 	{
 
@@ -104,22 +116,49 @@ public:
 
 	void Update() override
 	{
-		int x, y;
-		body->GetPhysicPosition(x, y);
-		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-		Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
-		Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
-	}
+		// he pensado de hacer aqui que cuando le des a la D se rote 
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { 299, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
-	{
-		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
 	}
 
 private:
 	Texture2D texture;
 
 };
+
+
+//class Box : public PhysicEntity
+//{
+//public:
+//	Box(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+//		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener)
+//		, texture(_texture)
+//	{
+//
+//	}
+//
+//	void Update() override
+//	{
+//		int x, y;
+//		body->GetPhysicPosition(x, y);
+//		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
+//		Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
+//		Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
+//	}
+//
+//	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
+//	{
+//		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
+//	}
+//
+//private:
+//	Texture2D texture;
+//
+//};
 
 //class Rick : public PhysicEntity
 //{
@@ -198,6 +237,7 @@ bool ModuleGame::Start()
 	fondo = LoadTexture("Assets/Fondo.png");
 	pokeball = LoadTexture("Assets/pokeball.png");
 	left_flip = LoadTexture("Assets/leftFlipper.png");
+	right_flip = LoadTexture("Assets/rightFlipper.png");
 
 	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
 
@@ -207,6 +247,9 @@ bool ModuleGame::Start()
 
 
 	entities.emplace_back(new Left_Flipper(App->physics, 5, 30, this, left_flip));
+
+	// no va la colision del right flipper cuando la bola va por arriba pero por el lateral si, es como que se atrapa dentro de la chain y en el left flipper no pasa y es lo mismo
+	entities.emplace_back(new Right_Flipper(App->physics, 5, 30, this, right_flip));
 
 	return ret;
 }
@@ -223,13 +266,17 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+	if (IsKeyPressed(KEY_ONE)) {
 
+		entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+
+	}
 	//Rectangle source = { 0, 0, (float)fondo.width, (float)fondo.height }; // - Porque las coordenadas de OpenGL están invertidas
 	//Rectangle dest = { 0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT };
 	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
 
 	// TODO 4: Move all creation of bodies on 1,2,3 key press here in the scene
-	if (IsKeyPressed(KEY_ONE))
+	if (IsKeyPressed(KEY_TWO))
 	{
 		entities.emplace_back(new Pokeball(App->physics, GetMouseX(), GetMouseY(), this, pokeball));
 

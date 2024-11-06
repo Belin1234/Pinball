@@ -25,6 +25,8 @@ public:
 		return 0;
 	}
 
+	
+
 	PhysBody* body;
 protected:
 	
@@ -53,6 +55,12 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		
+		if (y > 800) {
+			printf("ghuaapsd");
+			x = 300;
+			y = 300;
+		}
 	}
 
 private:
@@ -99,12 +107,12 @@ class Right_Flipper : public PhysicEntity
 {
 public:
 	static constexpr int right_flipper[12] = {
-	109, 254,
-	103, 253,
-	87, 265,
 	87, 268,
+	103, 253,	
+	109, 254,
+	109, 260,
 	89, 269,
-	109, 260
+	87, 265,
 	};
 
 	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)

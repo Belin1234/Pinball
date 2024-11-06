@@ -432,7 +432,6 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 	b2Vec2* vertices = new b2Vec2[size / 2];
 	for (int i = 0; i < size / 2; ++i) {
 		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
-		printf("Vertex %d: (%f, %f)\n", i, PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
 	}
 
 	b2BodyDef bodyDef;
@@ -541,6 +540,11 @@ float PhysBody::GetRotation() const
 {
 	return body->GetAngle();
 }
+
+//void PhysBody::SetRotation()
+//{
+//	body->Set;
+//}
 
 bool PhysBody::Contains(int x, int y) const
 {

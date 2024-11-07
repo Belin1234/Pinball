@@ -586,7 +586,6 @@ bool ModuleGame::Start()
 	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
 
 
-
 	entities.emplace_back(new Left_Flipper(App->physics, 5, 30, this, left_flip));
 	entities.emplace_back(new Right_Flipper(App->physics, 5, 30, this, right_flip));
 

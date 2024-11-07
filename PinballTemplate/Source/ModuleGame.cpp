@@ -429,12 +429,12 @@ class Right_Flipper : public PhysicEntity
 {
 public:
 	static constexpr int right_flipper[12] = {
-	87, 268,
+	87, 265,
 	103, 253,	
 	109, 254,
 	109, 260,
 	89, 269,
-	87, 265,
+	87, 268,
 	};
 
 	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)

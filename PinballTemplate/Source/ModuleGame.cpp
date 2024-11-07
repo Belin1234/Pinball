@@ -33,6 +33,326 @@ protected:
 	Module* listener;
 };
 
+class Perimeter : public PhysicEntity
+{
+	static constexpr int perimeter[134] = {
+		0, 0,
+		0, 280,
+		56, 280,
+		56, 278,
+		21, 255,
+		7, 246,
+		7, 207,
+		10, 200,
+		16, 195,
+		23, 194,
+		23, 175,
+		25, 169,
+		28, 166,
+		20, 153,
+		16, 140,
+		13, 126,
+		11, 111,
+		10, 101,
+		9, 88,
+		9, 15,
+		12, 10,
+		17, 8,
+		22, 10,
+		26, 16,
+		26, 31,
+		35, 24,
+		46, 17,
+		59, 12,
+		73, 9,
+		99, 9,
+		113, 12,
+		127, 17,
+		138, 24,
+		148, 33,
+		157, 44,
+		166, 58,
+		171, 71,
+		174, 87,
+		174, 278,
+		160, 278,
+		160, 84,
+		157, 70,
+		152, 58,
+		144, 46,
+		136, 38,
+		143, 51,
+		148, 65,
+		151, 77,
+		151, 100,
+		149, 111,
+		147, 123,
+		145, 133,
+		143, 143,
+		139, 154,
+		131, 167,
+		135, 170,
+		137, 176,
+		137, 193,
+		144, 195,
+		150, 200,
+		153, 207,
+		153, 245,
+		139, 255,
+		105, 278,
+		105, 280,
+		192, 280,
+		192, 0
+	};
+
+public:
+	Perimeter(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, perimeter, 134), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+
+};
+
+class UpperCollision : public PhysicEntity
+{
+	static constexpr int upper_collision[24] = {
+		39, 42,
+		52, 35,
+		64, 31,
+		79, 29,
+		94, 30,
+		105, 34,
+		117, 39,
+		105, 29,
+		89, 23,
+		75, 23,
+		60, 27,
+		49, 33
+
+	};
+
+public:
+	UpperCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, upper_collision, 24), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+
+};
+
+class LeftLittleCollision : public PhysicEntity
+{
+	static constexpr int left_little_collision[8] = {
+		67, 63,
+		71, 61,
+		71, 47,
+		67, 49
+
+	};
+
+
+public:
+	LeftLittleCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, left_little_collision, 8), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+
+};
+
+class RightLittleCollision : public PhysicEntity
+{
+	static constexpr int right_little_collision[8] = {
+		88, 57,
+		94, 57,
+		94, 43,
+		88, 43
+
+	};
+
+
+
+public:
+	RightLittleCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, right_little_collision, 8), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+};
+
+class StaryuCollision : public PhysicEntity
+{
+	static constexpr int staryu_collision[32] = {
+	66, 124,
+	65, 116,
+	61, 110,
+	54, 102,
+	48, 94,
+	47, 83,
+	50, 76,
+	50, 65,
+	45, 75,
+	43, 83,
+	43, 95,
+	43, 108,
+	45, 117,
+	49, 125,
+	55, 129,
+	61, 129
+	};
+
+
+
+public:
+	StaryuCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, staryu_collision, 32), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+};
+
+class UpperLeftCollision : public PhysicEntity
+{
+	static constexpr int upper_left_collision[26] = {
+	40, 150,
+	34, 143,
+	28, 130,
+	25, 116,
+	24, 104,
+	25, 95,
+	29, 85,
+	31, 86,
+	29, 97,
+	29, 106,
+	32, 121,
+	36, 132,
+	46, 145
+	};
+
+
+public:
+	UpperLeftCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, upper_left_collision, 26), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+};
+
+class UpperRightCollision : public PhysicEntity
+{
+
+	static constexpr int upper_right_collision[54] = {
+	105, 117,
+	107, 104,
+	109, 91,
+	110, 81,
+	110, 48,
+	121, 56,
+	127, 63,
+	132, 72,
+	135, 82,
+	135, 113,
+	133, 126,
+	129, 137,
+	125, 146,
+	121, 150,
+	115, 144,
+	121, 136,
+	127, 124,
+	129, 117,
+	131, 105,
+	131, 87,
+	127, 82,
+	121, 82,
+	117, 88,
+	116, 95,
+	116, 106,
+	113, 114,
+	110, 121
+	};
+
+
+
+public:
+	UpperRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, upper_right_collision, 54), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+};
+
+class DownLeftCollision : public PhysicEntity
+{
+
+	static constexpr int down_left_collision[12] = {
+	52, 261,
+	57, 254,
+	24, 232,
+	24, 207,
+	20, 207,
+	20, 240
+	};
+
+
+
+public:
+	DownLeftCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, down_left_collision, 12), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+};
+
+class DownRightCollision : public PhysicEntity
+{
+
+	static constexpr int down_right_collision[12] = {
+	140, 239,
+	140, 207,
+	136, 207,
+	136, 231,
+	104, 254,
+	107, 261
+	};
+
+
+
+public:
+	DownRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, down_right_collision, 12), _listener)
+	{
+
+	}
+
+	void Update() override {}
+
+};
+
 class Pokeball : public PhysicEntity
 {
 public:
@@ -56,11 +376,11 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 		
-		if (y > 800) {
-			printf("ghuaapsd");
-			x = 300;
-			y = 300;
-		}
+		/*if (y > 900) {
+			
+			delete body;
+			
+		}*/
 	}
 
 private:
@@ -81,7 +401,7 @@ public:
 	};
 
 	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, left_flipper, 12), _listener)
+		: PhysicEntity(physics->CreateFlipper(_x, _y, left_flipper, 12), _listener)
 		, texture(_texture)
 	{
 
@@ -94,6 +414,8 @@ public:
 		Rectangle dest = { 188, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
+
+		
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
 	}
@@ -253,10 +575,19 @@ bool ModuleGame::Start()
 	// Sensor rectangular que me ralla
 	/*sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);*/
 
+	entities.emplace_back(new Perimeter(App->physics, 5, 30, this));
+	entities.emplace_back(new UpperCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new LeftLittleCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new RightLittleCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new StaryuCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new UpperLeftCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new UpperRightCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new DownLeftCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
+
+
 
 	entities.emplace_back(new Left_Flipper(App->physics, 5, 30, this, left_flip));
-
-	// no va la colision del right flipper cuando la bola va por arriba pero por el lateral si, es como que se atrapa dentro de la chain y en el left flipper no pasa y es lo mismo
 	entities.emplace_back(new Right_Flipper(App->physics, 5, 30, this, right_flip));
 
 	return ret;
@@ -274,13 +605,14 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
+	
+	
 	if (IsKeyPressed(KEY_ONE)) {
 
 		entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
 
 	}
-	//Rectangle source = { 0, 0, (float)fondo.width, (float)fondo.height }; // - Porque las coordenadas de OpenGL están invertidas
-	//Rectangle dest = { 0, 0, (float)SCREEN_WIDTH, (float)SCREEN_HEIGHT };
+
 	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
 
 	// TODO 4: Move all creation of bodies on 1,2,3 key press here in the scene

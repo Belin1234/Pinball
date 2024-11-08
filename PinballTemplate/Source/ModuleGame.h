@@ -33,6 +33,7 @@ public:
 	Texture2D pokeball;
 	Texture2D left_flip;
 	Texture2D right_flip;
+	Texture2D voltorb;
 
 	//uint32 bonus_fx;
 

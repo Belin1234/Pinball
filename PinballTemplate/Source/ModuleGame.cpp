@@ -547,6 +547,20 @@ private:
 //	Texture2D texture;
 //};
 
+class Voltorb : public PhysicEntity
+{
+public:
+	
+
+	void Update() override
+	{
+
+	}
+
+private:
+	Texture2D texture;
+
+};
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -568,6 +582,7 @@ bool ModuleGame::Start()
 	pokeball = LoadTexture("Assets/pokeball.png");
 	left_flip = LoadTexture("Assets/leftFlipper.png");
 	right_flip = LoadTexture("Assets/rightFlipper.png");
+	voltorb = LoadTexture("Assets/voltorb.png");
 
 	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
 
@@ -588,6 +603,8 @@ bool ModuleGame::Start()
 
 	entities.emplace_back(new Left_Flipper(App->physics, 5, 30, this, left_flip));
 	entities.emplace_back(new Right_Flipper(App->physics, 5, 30, this, right_flip));
+
+	entities.emplace_back(new Voltorb(App->physics, 5, 30, this, this));
 
 	return ret;
 }

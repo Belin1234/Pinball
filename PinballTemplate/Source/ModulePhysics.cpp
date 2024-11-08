@@ -121,13 +121,13 @@ update_status ModulePhysics::PostUpdate()
 	if (IsKeyDown(KEY_S))
 	{
 		// Cargas el muelle con la 'S'
-		springJoint->SetMotorSpeed(1.0f);
-		springJoint->SetMaxMotorForce(6000.0f);
+		springJoint->SetMotorSpeed(10000.0f);
+		springJoint->SetMaxMotorForce(10000.0f);
 	}
 	else if (IsKeyReleased(KEY_S))
 	{
 		// Se activa el rebote cuando sueltas la 'S'
-		springJoint->SetMotorSpeed(-500.0f); // Velocidad de rebote hacia arriba
+		springJoint->SetMotorSpeed(-10000.0f); // Velocidad de rebote hacia arriba
 	}
 	else
 	{
@@ -381,15 +381,20 @@ PhysBody* ModulePhysics::CreateSpring(int posX, int posY, int springWidth, int s
 {
 	// Posicion en X del muelle
 	int adjustedX = posX - 35;
+	int adjustedY = posY + 95;
 
 	// Crear base del muelle
 	b2BodyDef baseBodyDef;
 	baseBodyDef.type = b2_staticBody;
-	baseBodyDef.position.Set(PIXEL_TO_METERS(adjustedX), PIXEL_TO_METERS(posY));
+	baseBodyDef.position.Set(PIXEL_TO_METERS(adjustedX), PIXEL_TO_METERS(adjustedY));
 	springBase = world->CreateBody(&baseBodyDef);
 
+	// Reducir el tamaño del muelle
+	int reducedWidth = springWidth * 0.8;    // Reducir el ancho a un 80%
+	int reducedHeight = springHeight * 0.05;  // Reducir el alto a un 80%
+
 	// Crear cuerpo móvil del muelle
-	springPiston = CreateRectangle(adjustedX, posY + springHeight / 2, springWidth, springHeight);
+	springPiston = CreateRectangle(adjustedX, adjustedY + reducedHeight / 2, reducedWidth, reducedHeight);
 
 	// Definir el prismatic joint
 	b2PrismaticJointDef prismaticJointConfig;
@@ -397,19 +402,19 @@ PhysBody* ModulePhysics::CreateSpring(int posX, int posY, int springWidth, int s
 	prismaticJointConfig.bodyB = springPiston->body;
 	prismaticJointConfig.collideConnected = false;
 	prismaticJointConfig.localAnchorA.Set(0, 0);
-	prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(springHeight) / 2);
+	prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(reducedHeight) / 2);
 
 	// Configurar el eje de movimiento en el eje Y
 	prismaticJointConfig.localAxisA.Set(0, 1);
 
 	// Límites de movimiento
 	prismaticJointConfig.enableLimit = true;
-	prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(springHeight * 0.3f);// Límite abajo
-	prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(springHeight * 0.3f);// Límite arriba
+	prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite abajo
+	prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite arriba
 
 	// Configurar fuerza del muelle
 	prismaticJointConfig.enableMotor = true;
-	prismaticJointConfig.maxMotorForce = 1000.0f; //Fuerza del muelle
+	prismaticJointConfig.maxMotorForce = 10000.0f; //Fuerza del muelle
 	prismaticJointConfig.motorSpeed = 0.0f; //Velocidad inicial del muelle
 
 	// Crear el prismatic joint

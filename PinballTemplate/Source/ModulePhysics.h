@@ -55,6 +55,8 @@ public:
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	PhysBody* CreateEdge(int x, int y, const int* points, int size);
 	PhysBody* CreateFlipper(int x, int y, const int* points, int size);
+	PhysBody* CreateSpring(int x, int y, int width, int height);
+	PhysBody* springPiston;
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 
 	// b2ContactListener ---
@@ -64,6 +66,7 @@ public:
 private:
 
 	bool debug;
-	
+	b2Body* springBase;
+	b2PrismaticJoint* springJoint;
 
 };

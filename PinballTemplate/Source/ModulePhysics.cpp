@@ -32,6 +32,8 @@ bool ModulePhysics::Start()
 	int x = 5;
 	int y = 30;
 
+
+	CreateSpring(SCREEN_WIDTH - 30, SCREEN_HEIGHT - 100, 30, 50);
 	// Crea el contorno del pinball
 
 
@@ -116,6 +118,22 @@ update_status ModulePhysics::PostUpdate()
 		return UPDATE_CONTINUE;
 	}
 
+	if (IsKeyDown(KEY_S))
+	{
+		// Cargas el muelle con la 'S'
+		springJoint->SetMotorSpeed(1.0f);
+		springJoint->SetMaxMotorForce(6000.0f);
+	}
+	else if (IsKeyReleased(KEY_S))
+	{
+		// Se activa el rebote cuando sueltas la 'S'
+		springJoint->SetMotorSpeed(-500.0f); // Velocidad de rebote hacia arriba
+	}
+	else
+	{
+		// Desactivas el muelle si no aprietas la 'S'
+		springJoint->SetMotorSpeed(0.0f);
+	}
 
 
 
@@ -357,6 +375,47 @@ PhysBody* ModulePhysics::CreateFlipper(int x, int y, const int* points, int size
 	pbody->joint = flipperJoint;  
 
 	return pbody;
+}
+
+PhysBody* ModulePhysics::CreateSpring(int posX, int posY, int springWidth, int springHeight)
+{
+	// Posicion en X del muelle
+	int adjustedX = posX - 35;
+
+	// Crear base del muelle
+	b2BodyDef baseBodyDef;
+	baseBodyDef.type = b2_staticBody;
+	baseBodyDef.position.Set(PIXEL_TO_METERS(adjustedX), PIXEL_TO_METERS(posY));
+	springBase = world->CreateBody(&baseBodyDef);
+
+	// Crear cuerpo móvil del muelle
+	springPiston = CreateRectangle(adjustedX, posY + springHeight / 2, springWidth, springHeight);
+
+	// Definir el prismatic joint
+	b2PrismaticJointDef prismaticJointConfig;
+	prismaticJointConfig.bodyA = springBase;
+	prismaticJointConfig.bodyB = springPiston->body;
+	prismaticJointConfig.collideConnected = false;
+	prismaticJointConfig.localAnchorA.Set(0, 0);
+	prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(springHeight) / 2);
+
+	// Configurar el eje de movimiento en el eje Y
+	prismaticJointConfig.localAxisA.Set(0, 1);
+
+	// Límites de movimiento
+	prismaticJointConfig.enableLimit = true;
+	prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(springHeight * 0.3f);// Límite abajo
+	prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(springHeight * 0.3f);// Límite arriba
+
+	// Configurar fuerza del muelle
+	prismaticJointConfig.enableMotor = true;
+	prismaticJointConfig.maxMotorForce = 1000.0f; //Fuerza del muelle
+	prismaticJointConfig.motorSpeed = 0.0f; //Velocidad inicial del muelle
+
+	// Crear el prismatic joint
+	springJoint = (b2PrismaticJoint*)world->CreateJoint(&prismaticJointConfig);
+
+	return springPiston;
 }
 
 PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)

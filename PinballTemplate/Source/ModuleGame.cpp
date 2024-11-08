@@ -35,7 +35,7 @@ protected:
 
 class Perimeter : public PhysicEntity
 {
-	static constexpr int perimeter[134] = {
+	static constexpr int perimeter2[134] = {
 		0, 0,
 		0, 280,
 		56, 280,
@@ -107,7 +107,7 @@ class Perimeter : public PhysicEntity
 
 public:
 	Perimeter(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, perimeter, 134), _listener)
+		: PhysicEntity(physics->CreateEdge(_x, _y, perimeter2, 134), _listener)
 	{
 
 	}

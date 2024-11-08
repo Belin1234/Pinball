@@ -11,7 +11,11 @@
 class PhysBody;
 class PhysicEntity;
 
-
+enum CollisionType
+{
+	DEFAULT,
+	VOLTORB
+};
 class ModuleGame : public Module
 {
 public:
@@ -34,6 +38,9 @@ public:
 	Texture2D left_flip;
 	Texture2D right_flip;
 	Texture2D voltorb;
+	Texture2D voltorbChocado;
+
+	int score;
 
 	//uint32 bonus_fx;
 

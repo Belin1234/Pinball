@@ -560,10 +560,6 @@ public:
 
 	void Update() override
 	{
-		int x, y;
-		springPiston->GetPhysicPosition(x, y);
-		printf("VECTOR %i, %i", x,y);
-
 		if (IsKeyDown(KEY_S))
 		{
 			// Cargas el muelle con la 'S'

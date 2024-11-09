@@ -36,78 +36,80 @@ protected:
 class Perimeter : public PhysicEntity
 {
 	static constexpr int perimeter[134] = {
-		0, 0,
-		0, 280,
-		56, 280,
-		56, 278,
-		21, 255,
-		7, 246,
-		7, 207,
-		10, 200,
-		16, 195,
-		23, 194,
-		23, 175,
-		25, 169,
-		28, 166,
-		20, 153,
-		16, 140,
-		13, 126,
-		11, 111,
-		10, 101,
-		9, 88,
-		9, 15,
-		12, 10,
-		17, 8,
-		22, 10,
-		26, 16,
-		26, 31,
-		35, 24,
-		46, 17,
-		59, 12,
-		73, 9,
-		99, 9,
-		113, 12,
-		127, 17,
-		138, 24,
-		148, 33,
-		157, 44,
-		166, 58,
-		171, 71,
-		174, 87,
-		174, 278,
-		160, 278,
-		160, 84,
-		157, 70,
-		152, 58,
-		144, 46,
-		136, 38,
-		143, 51,
-		148, 65,
-		151, 77,
-		151, 100,
-		149, 111,
-		147, 123,
-		145, 133,
-		143, 143,
-		139, 154,
-		131, 167,
-		135, 170,
-		137, 176,
-		137, 193,
-		144, 195,
-		150, 200,
-		153, 207,
-		153, 245,
-		139, 255,
-		105, 278,
-		105, 280,
+		
+		192, 0,
+
 		192, 280,
-		192, 0
+		105, 280,
+		105, 278,
+		139, 255,
+		153, 245,
+		153, 207,
+		150, 200,
+		144, 195,
+		137, 193,
+		137, 176,
+		135, 170,
+		131, 167,
+		139, 154,
+		143, 143,
+		145, 133,
+		147, 123,
+		149, 111,
+		151, 100,
+		151, 77,
+		148, 65,
+		143, 51,
+		136, 38,
+		144, 46,
+		152, 58,
+		157, 70,
+		160, 84,
+		160, 278,
+		174, 278,
+		174, 87,
+		171, 71,
+		166, 58,
+		157, 44,
+		148, 33,
+		138, 24,
+		127, 17,
+		113, 12,
+		99, 9,
+		73, 9,
+		59, 12,
+		46, 17,
+		35, 24,
+		26, 31,
+		26, 16,
+		22, 10,
+		17, 8,
+		12, 10,
+		9, 15,
+		9, 88,
+		10, 101,
+		11, 111,
+		13, 126,
+		16, 140,
+		20, 153,
+		28, 166,
+		25, 169,
+		23, 175,
+		23, 194,
+		16, 195,
+		10, 200,
+		7, 207,
+		7, 246,
+		21, 255,
+		56, 278,
+		56, 280,
+		0, 280,
+		0, 0,
 	};
 
 public:
 	Perimeter(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, perimeter, 134), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, perimeter, 134), _listener)
 	{
 
 	}
@@ -121,23 +123,24 @@ class UpperCollision : public PhysicEntity
 {
 	static constexpr int upper_collision[24] = {
 		39, 42,
-		52, 35,
-		64, 31,
-		79, 29,
-		94, 30,
-		105, 34,
-		117, 39,
-		105, 29,
-		89, 23,
-		75, 23,
+		49, 33,
 		60, 27,
-		49, 33
+		75, 23,
+		89, 23,
+		105, 29,
+		117, 39,
+		105, 34,
+		94, 30,
+		79, 29,
+		64, 31,
+		52, 35
+		
 
 	};
 
 public:
 	UpperCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, upper_collision, 24), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, upper_collision, 24), _listener)
 	{
 
 	}
@@ -151,16 +154,17 @@ class LeftLittleCollision : public PhysicEntity
 {
 	static constexpr int left_little_collision[8] = {
 		67, 63,
-		71, 61,
+		67, 49,
 		71, 47,
-		67, 49
+		71, 61
+		
 
 	};
 
 
 public:
 	LeftLittleCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, left_little_collision, 8), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, left_little_collision, 8), _listener)
 	{
 
 	}
@@ -174,9 +178,11 @@ class RightLittleCollision : public PhysicEntity
 {
 	static constexpr int right_little_collision[8] = {
 		88, 57,
-		94, 57,
+		88, 43,
 		94, 43,
-		88, 43
+		94, 57
+		
+		
 
 	};
 
@@ -184,7 +190,7 @@ class RightLittleCollision : public PhysicEntity
 
 public:
 	RightLittleCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, right_little_collision, 8), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, right_little_collision, 8), _listener)
 	{
 
 	}
@@ -196,29 +202,29 @@ public:
 class StaryuCollision : public PhysicEntity
 {
 	static constexpr int staryu_collision[32] = {
-	66, 124,
-	65, 116,
-	61, 110,
-	54, 102,
-	48, 94,
-	47, 83,
-	50, 76,
-	50, 65,
-	45, 75,
-	43, 83,
-	43, 95,
-	43, 108,
-	45, 117,
-	49, 125,
+	61, 129,
 	55, 129,
-	61, 129
+	49, 125,
+	45, 117,
+	43, 108,
+	43, 95,
+	43, 83,
+	45, 75,
+	50, 65,
+	50, 76,
+	47, 83,
+	48, 94,
+	54, 102,
+	61, 110,
+	65, 116,
+	66, 124
 	};
 
 
 
 public:
 	StaryuCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, staryu_collision, 32), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, staryu_collision, 32), _listener)
 	{
 
 	}
@@ -248,7 +254,7 @@ class UpperLeftCollision : public PhysicEntity
 
 public:
 	UpperLeftCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, upper_left_collision, 26), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, upper_left_collision, 26), _listener)
 	{
 
 	}
@@ -294,7 +300,7 @@ class UpperRightCollision : public PhysicEntity
 
 public:
 	UpperRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, upper_right_collision, 54), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, upper_right_collision, 54), _listener)
 	{
 
 	}
@@ -307,19 +313,21 @@ class DownLeftCollision : public PhysicEntity
 {
 
 	static constexpr int down_left_collision[12] = {
-	52, 261,
-	57, 254,
-	24, 232,
+	
 	24, 207,
-	20, 207,
-	20, 240
+	24, 232,
+	56, 254,
+	52, 261,
+	20, 240,
+	20, 207
+	
 	};
 
 
 
 public:
 	DownLeftCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, down_left_collision, 12), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, down_left_collision, 12), _listener)
 	{
 
 	}
@@ -332,19 +340,20 @@ class DownRightCollision : public PhysicEntity
 {
 
 	static constexpr int down_right_collision[12] = {
-	140, 239,
-	140, 207,
+	
 	136, 207,
+	140, 207,
+	140, 239,
+	108, 261,
+	105, 254,
 	136, 231,
-	104, 254,
-	107, 261
 	};
 
 
 
 public:
 	DownRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
-		: PhysicEntity(physics->CreateEdge(_x, _y, down_right_collision, 12), _listener)
+		: PhysicEntity(physics->CreateChain(_x, _y, down_right_collision, 12), _listener)
 	{
 
 	}
@@ -388,77 +397,106 @@ private:
 
 };
 
-class Left_Flipper: public PhysicEntity
-{
-public:
-	static constexpr int left_flipper[12] = {
-	51, 260,
-	51, 254,
-	56, 253,
-	73, 266,
-	73, 268,
-	71, 269
-	};
+//class Left_Flipper: public PhysicEntity
+//{
+//public:
+//	static constexpr int left_flipper[12] = {
+//	51, 260,
+//	51, 254,
+//	56, 253,
+//	73, 266,
+//	73, 268,
+//	71, 269
+//	};
+//
+//	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+//		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
+//		, texture(_texture)
+//	{
+//		
+//
+//		PhysBody* Box1 = ModulePhysics::CreateRectangle2(176, 610, 5, 5); //-200
+//		
+//
+//		b2RevoluteJointDef jointDef;
+//		jointDef.Initialize(Box1->body, body->body, b2Vec2(PIXEL_TO_METERS(175), PIXEL_TO_METERS(610)));
+//		jointDef.enableMotor = true;
+//		jointDef.motorSpeed = 0.0f;
+//		jointDef.maxMotorTorque = 200.0f;
+//		jointDef.enableLimit = true;
+//		jointDef.lowerAngle = -25 * b2_pi / 180.0f;  // Limite inferior en radianes (-20 grados)
+//		jointDef.upperAngle = 25 * b2_pi / 180.0f;   // Limite superior en radianes (20 grados)
+//
+//		// Crear la unión en el mundo de Box2D
+//	    gJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
+//
+//	}
+//
+//	void Update() override
+//	{
+//		// he pensado de hacer aqui que cuando le des a la A se rote 
+//		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+//		Rectangle dest = { 188, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
+//		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
+//		float rotation = body->GetRotation() * RAD2DEG;
+//
+//		if (IsKeyDown(KEY_A))
+//		{
+//			gJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
+//		}
+//		else {
+//			gJoint->SetMotorSpeed(5.0f); // Detener
+//		}
+//		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+//
+//	}
+//
+//private:
+//	Texture2D texture;
+//
+//};
 
-	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateFlipper(_x, _y, left_flipper, 12), _listener)
-		, texture(_texture)
-	{
-
-	}
-
-	void Update() override
-	{
-		// he pensado de hacer aqui que cuando le des a la A se rote 
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { 188, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
-		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
-		float rotation = body->GetRotation() * RAD2DEG;
-
-		
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-
-	}
-
-private:
-	Texture2D texture;
-
-};
-
-class Right_Flipper : public PhysicEntity
-{
-public:
-	static constexpr int right_flipper[12] = {
-	87, 265,
-	103, 253,	
-	109, 254,
-	109, 260,
-	89, 269,
-	87, 268,
-	};
-
-	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, right_flipper, 12), _listener)
-		, texture(_texture)
-	{
-
-	}
-
-	void Update() override
-	{
-		// he pensado de hacer aqui que cuando le des a la D se rote 
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { 299, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
-		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
-		float rotation = body->GetRotation() * RAD2DEG;
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-
-	}
-
-private:
-	Texture2D texture;
-
-};
+//class Right_Flipper : public PhysicEntity
+//{
+//public:
+//	static constexpr int right_flipper[12] = {
+//	87, 265,
+//	103, 253,	
+//	109, 254,
+//	109, 260,
+//	89, 269,
+//	87, 268,
+//	};
+//
+//	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+//		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
+//		, texture(_texture)
+//	{
+//
+//	}
+//
+//	void Update() override
+//	{
+//		// he pensado de hacer aqui que cuando le des a la D se rote 
+//		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+//		Rectangle dest = { 299, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
+//		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
+//		float rotation = body->GetRotation() * RAD2DEG;
+//
+//		if (IsKeyDown(KEY_D)) {
+//			body->Rotate(-5.0f * DEG2RAD);
+//		}
+//		else {
+//			/*body->Rotate(5.0f * DEG2RAD);*/
+//		}
+//		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+//
+//	}
+//
+//private:
+//	Texture2D texture;
+//
+//};
 
 
 //class Box : public PhysicEntity
@@ -566,8 +604,8 @@ bool ModuleGame::Start()
 
 	fondo = LoadTexture("Assets/Fondo.png");
 	pokeball = LoadTexture("Assets/pokeball.png");
-	left_flip = LoadTexture("Assets/leftFlipper.png");
-	right_flip = LoadTexture("Assets/rightFlipper.png");
+	/*left_flip = LoadTexture("Assets/leftFlipper.png");
+	right_flip = LoadTexture("Assets/rightFlipper.png");*/
 
 	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
 
@@ -586,8 +624,8 @@ bool ModuleGame::Start()
 	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
 
 
-	entities.emplace_back(new Left_Flipper(App->physics, 5, 30, this, left_flip));
-	entities.emplace_back(new Right_Flipper(App->physics, 5, 30, this, right_flip));
+	/*entities.emplace_back(new Left_Flipper(App->physics, 188, 812, this, left_flip));
+	entities.emplace_back(new Right_Flipper(App->physics, 299, 812, this, right_flip));*/
 
 	return ret;
 }

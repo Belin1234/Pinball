@@ -29,6 +29,8 @@ public:
 	PhysBody* sensor;
 	bool sensed;
 
+	/*b2RevoluteJoint* gJoint;*/
+
 	Texture2D fondo;
 	Texture2D pokeball;
 	Texture2D left_flip;

@@ -53,11 +53,15 @@ public:
 	bool CleanUp();
 
 	PhysBody* CreateCircle(int x, int y, float radius);
+	PhysBody* CreateCircle2(int x, int y, float radius);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangle2(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	PhysBody* CreateEdge(int x, int y, const int* points, int size);
+	
 	void Create2Flipper();
+	PhysBody* CreateSpring(int x, int y, int width, int height);
+	PhysBody* springPiston;
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 
 	// b2ContactListener ---
@@ -72,8 +76,9 @@ public:
 private:
 
 	bool debug;
+	b2Body* springBase;
+	b2PrismaticJoint* springJoint;
 	Texture2D leftFlipperTexture;
 	Texture2D rightFlipperTexture;
-	
 
 };

@@ -25,12 +25,14 @@ public:
 		return 0;
 	}
 
-	
-
+	CollisionType GetCollisionType() const {
+		return collisionType;
+	}
 	PhysBody* body;
 protected:
 	
 	Module* listener;
+	CollisionType collisionType;
 };
 
 class Perimeter : public PhysicEntity
@@ -585,6 +587,34 @@ private:
 //	Texture2D texture;
 //};
 
+class Voltorb : public PhysicEntity
+{
+public:
+	Voltorb(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateCircle2(_x, _y, 6.5f * SCALE), _listener)
+		, texture(_texture)
+	{
+		collisionType = VOLTORB;
+	}
+
+	void Update() override
+	{
+		int x, y;
+		body->GetPhysicPosition(x, y);
+
+		Vector2 position{ (float)x, (float)y };
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+	}
+
+private:
+	Texture2D texture;
+
+};
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -604,8 +634,10 @@ bool ModuleGame::Start()
 
 	fondo = LoadTexture("Assets/Fondo.png");
 	pokeball = LoadTexture("Assets/pokeball.png");
-	/*left_flip = LoadTexture("Assets/leftFlipper.png");
-	right_flip = LoadTexture("Assets/rightFlipper.png");*/
+	//left_flip = LoadTexture("Assets/leftFlipper.png");
+	//right_flip = LoadTexture("Assets/rightFlipper.png");
+	voltorb = LoadTexture("Assets/voltorb.png");
+	voltorbChocado = LoadTexture("Assets/voltorbChocado.png");
 
 	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
 
@@ -626,6 +658,10 @@ bool ModuleGame::Start()
 
 	/*entities.emplace_back(new Left_Flipper(App->physics, 188, 812, this, left_flip));
 	entities.emplace_back(new Right_Flipper(App->physics, 299, 812, this, right_flip));*/
+
+	entities.emplace_back(new Voltorb(App->physics, 280, 260, this, voltorb));
+	entities.emplace_back(new Voltorb(App->physics, 210, 297, this, voltorb));
+	entities.emplace_back(new Voltorb(App->physics, 265, 350, this, voltorb));
 
 	return ret;
 }
@@ -717,5 +753,22 @@ update_status ModuleGame::Update()
 }
 void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
+	bool hascollisionwithvoltorb = false;
+
+	int length = entities.size();
+	for (int i = 0; i < length; i++)
+	{
+		if (bodyA == entities[i]->body && entities[i]->GetCollisionType() == VOLTORB ){
+			hascollisionwithvoltorb = true;
+			printf("Collision detected:       %i", score);
+			break;
+		}
+	}
+	if (hascollisionwithvoltorb) { 
+		score += 500;
+		
+	}
+	
+
 	/*App->audio->PlayFx(bonus_fx);*/
 }

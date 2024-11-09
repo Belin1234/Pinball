@@ -40,6 +40,7 @@ bool ModuleWindow::Init()
 	InitWindow(width, height, TITLE);
 
 	/*ToggleFullscreen();*/
+	SetTargetFPS(60);
 
 	return ret;
 }

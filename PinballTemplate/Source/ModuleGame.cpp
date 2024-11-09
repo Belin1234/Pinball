@@ -371,7 +371,7 @@ public:
 		: PhysicEntity(physics->CreateCircle(_x, _y, 5.4f * SCALE), _listener)
 		, texture(_texture)
 	{
-
+		collisionType = POKEBALL;
 	}
 
 	void Update() override
@@ -387,11 +387,11 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 		
-		/*if (y > 900) {
-			
-			delete body;
-			
-		}*/
+		//if (y > 900) {
+		//	
+		//	delete body;
+		//	
+		//}
 	}
 
 private:
@@ -560,9 +560,6 @@ public:
 
 	void Update() override
 	{
-		int x, y;
-		springPiston->GetPhysicPosition(x, y);
-		printf("VECTOR %i, %i", x,y);
 
 		if (IsKeyDown(KEY_S))
 		{
@@ -755,6 +752,9 @@ bool ModuleGame::Start()
 	entities.emplace_back(new Voltorb(App->physics, 210, 297, this, voltorb));
 	entities.emplace_back(new Voltorb(App->physics, 265, 350, this, voltorb));
 
+	score = 0;
+	lives = 3;
+
 	return ret;
 }
 
@@ -811,6 +811,7 @@ update_status ModuleGame::Update()
 				ray_hit = hit;
 			}
 		}
+		
 	}
 
 
@@ -828,18 +829,53 @@ update_status ModuleGame::Update()
 			DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
 		}
 	}
+	
+	//int length = entities.size();
+	//for (int i = 0; i < length; i++) {
+	//	if (entities[i]->GetCollisionType() == POKEBALL) {
+	//		printf("ELIMINADO");
+	//		delete entities[i];
 
-	// Carga la textura y la rota pero no
-	for each (PhysBody * body in bodies)
+	//		if (lives > 0) {
+	//			entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+	//		}
+	//		else {
+	//			lives = 0;
+	//		}
+	//		printf("ANTES: %i", lives);
+	//		lives -= 1;
+	//		printf("LUEGO: %i", lives);
+	//	}
+	//}
+
+	for (int i = 0; i < entities.size(); ++i)
 	{
 		int x, y;
-		body->GetPhysicPosition(x, y);
-		float degrees = body->GetRotation() * RAD2DEG;
-		/*Blit(pokeball, x, y, nullptr, degrees);*/
+		entities[i]->body->GetPhysicPosition(x, y);
 
-		App->renderer->Draw(pokeball, x - pokeball.width * 0.5f, y - pokeball.height * 0.5f);
+		if (entities[i]->GetCollisionType() == POKEBALL && y > 850)
+		{
+			// Sustituye por nullptr en lugar de eliminar y borrar inmediatamente
+			delete entities[i];
+			entities[i] = nullptr;
 
+			if (lives > 0)
+			{
+				entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+				printf("ANTES: %i", lives);
+				lives -= 1;
+				App->renderer->lives = lives;
+				printf("LUEGO: %i", lives);
+			}
+			else
+			{
+				lives = 0;
+			}
+		}
 	}
+
+	// Limpia los nullptr después del bucle
+	entities.erase(remove(entities.begin(), entities.end(), nullptr), entities.end());
 
 	return UPDATE_CONTINUE;
 }

@@ -58,6 +58,7 @@ update_status ModuleRender::PostUpdate()
     DrawTextEx(GetFontDefault(), TextFormat("Score: %08i", score), Vector2 { 300, 1 }, 30, 4, YELLOW);
 
     // Draw Lives
+    
     DrawTextEx(GetFontDefault(), TextFormat("Lives: %i", lives), Vector2{ 140, 1 }, 30, 4, RED);
 
     EndDrawing();

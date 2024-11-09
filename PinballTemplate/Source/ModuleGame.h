@@ -33,12 +33,10 @@ public:
 	PhysBody* sensor;
 	bool sensed;
 
-	/*b2RevoluteJoint* gJoint;*/
-
 	Texture2D fondo;
 	Texture2D pokeball;
-	Texture2D left_flip;
-	Texture2D right_flip;
+	Texture2D leftFlipperTexture;
+	Texture2D rightFlipperTexture;
 	Texture2D voltorb;
 	Texture2D voltorbChocado;
 

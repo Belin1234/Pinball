@@ -399,106 +399,197 @@ private:
 
 };
 
-//class Left_Flipper: public PhysicEntity
-//{
-//public:
-//	static constexpr int left_flipper[12] = {
-//	51, 260,
-//	51, 254,
-//	56, 253,
-//	73, 266,
-//	73, 268,
-//	71, 269
-//	};
-//
-//	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-//		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
-//		, texture(_texture)
-//	{
-//		
-//
-//		PhysBody* Box1 = ModulePhysics::CreateRectangle2(176, 610, 5, 5); //-200
-//		
-//
-//		b2RevoluteJointDef jointDef;
-//		jointDef.Initialize(Box1->body, body->body, b2Vec2(PIXEL_TO_METERS(175), PIXEL_TO_METERS(610)));
-//		jointDef.enableMotor = true;
-//		jointDef.motorSpeed = 0.0f;
-//		jointDef.maxMotorTorque = 200.0f;
-//		jointDef.enableLimit = true;
-//		jointDef.lowerAngle = -25 * b2_pi / 180.0f;  // Limite inferior en radianes (-20 grados)
-//		jointDef.upperAngle = 25 * b2_pi / 180.0f;   // Limite superior en radianes (20 grados)
-//
-//		// Crear la unión en el mundo de Box2D
-//	    gJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
-//
-//	}
-//
-//	void Update() override
-//	{
-//		// he pensado de hacer aqui que cuando le des a la A se rote 
-//		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-//		Rectangle dest = { 188, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
-//		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
-//		float rotation = body->GetRotation() * RAD2DEG;
-//
-//		if (IsKeyDown(KEY_A))
-//		{
-//			gJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
-//		}
-//		else {
-//			gJoint->SetMotorSpeed(5.0f); // Detener
-//		}
-//		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-//
-//	}
-//
-//private:
-//	Texture2D texture;
-//
-//};
+class Left_Flipper: public PhysicEntity
+{
+public:
+	//static constexpr int left_flipper[12] = {
+	//51, 260,
+	//51, 254,
+	//56, 253,
+	//73, 266,
+	//73, 268,
+	//71, 269
+	//};
 
-//class Right_Flipper : public PhysicEntity
-//{
-//public:
-//	static constexpr int right_flipper[12] = {
-//	87, 265,
-//	103, 253,	
-//	109, 254,
-//	109, 260,
-//	89, 269,
-//	87, 268,
-//	};
-//
-//	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-//		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
-//		, texture(_texture)
-//	{
-//
-//	}
-//
-//	void Update() override
-//	{
-//		// he pensado de hacer aqui que cuando le des a la D se rote 
-//		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-//		Rectangle dest = { 299, 812, (float)texture.width * SCALE, (float)texture.height * SCALE };
-//		Vector2 origin = { ((float)texture.width * SCALE) / 2.0, ((float)texture.height * SCALE) / 2.0f };
-//		float rotation = body->GetRotation() * RAD2DEG;
-//
-//		if (IsKeyDown(KEY_D)) {
-//			body->Rotate(-5.0f * DEG2RAD);
-//		}
-//		else {
-//			/*body->Rotate(5.0f * DEG2RAD);*/
-//		}
-//		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-//
-//	}
-//
-//private:
-//	Texture2D texture;
-//
-//};
+	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
+		, texture(_texture)
+	{
+
+		Box1 = physics->CreateRectangle2(176, 810, 5, 5);
+
+		b2RevoluteJointDef jointDef;
+		jointDef.Initialize(Box1->body, body->body, b2Vec2(PIXEL_TO_METERS(175), PIXEL_TO_METERS(810)));
+		jointDef.enableMotor = true;
+		jointDef.motorSpeed = 0.0f;
+		jointDef.maxMotorTorque = 200.0f;
+		jointDef.enableLimit = true;
+		jointDef.lowerAngle = -25 * DEG2RAD;  // Limite inferior en radianes (-20 grados)
+		jointDef.upperAngle = 25 * DEG2RAD;   // Limite superior en radianes (20 grados)
+
+		// Crear la unión en el mundo de Box2D
+	    leftJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
+
+	}
+
+	void Update() override
+	{
+		b2Vec2 pos = body->body->GetPosition();
+		Vector2 position{ (float)pos.x + 168, (float)pos.y + 790 };
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { 5 * SCALE, texture.height * SCALE * 0.25 };
+		float rotation = body->body->GetAngle() * RAD2DEG - 120 * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		if (IsKeyDown(KEY_A))
+		{
+			leftJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
+		}
+		else {
+			leftJoint->SetMotorSpeed(5.0f); // Detener
+		}
+		
+
+	}
+
+private:
+	
+	Texture2D texture;
+	PhysBody* Box1;
+	b2RevoluteJoint* leftJoint;
+
+};
+
+class Right_Flipper : public PhysicEntity
+{
+public:
+	//static constexpr int right_flipper[12] = {
+	//87, 265,
+	//103, 253,	
+	//109, 254,
+	//109, 260,
+	//89, 269,
+	//87, 268,
+	//};
+
+	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
+		, texture(_texture)
+	{
+		Box2 = physics->CreateRectangle2(315, 810, 5, 5);
+
+
+		b2RevoluteJointDef jointDef;
+		jointDef.Initialize(Box2->body, body->body, b2Vec2(PIXEL_TO_METERS(315), PIXEL_TO_METERS(810)));
+		jointDef.enableMotor = true;
+		jointDef.motorSpeed = 0.0f;
+		jointDef.maxMotorTorque = 200.0f;
+		jointDef.enableLimit = true;
+		jointDef.lowerAngle = -25 * DEG2RAD;
+		jointDef.upperAngle = 25 * DEG2RAD;
+
+		// Crear la unión en el mundo de Box2D
+		rightJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
+	}
+
+	void Update() override
+	{
+		b2Vec2 pos = body->body->GetPosition();
+		Vector2 position{ (float)pos.x + 315, (float)pos.y + 789 };
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { texture.width * SCALE - 5 * SCALE, texture.height * SCALE * 0.25 };
+		float rotation = body->body->GetAngle() * RAD2DEG + 120 * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		if (IsKeyDown(KEY_D))
+		{
+			rightJoint->SetMotorSpeed(10.0f); // Rotar a la izquierda
+		}
+		else {
+			rightJoint->SetMotorSpeed(-5.0f); // Detener
+		}
+		
+
+	}
+
+private:
+	
+	Texture2D texture;
+	PhysBody* Box2;
+	b2RevoluteJoint* rightJoint;
+
+};
+
+class InvisibleSpring : public PhysicEntity
+{
+public:
+
+	InvisibleSpring(ModulePhysics* physics, int _x, int _y, float _w, float _h, Module* _listener)
+		: PhysicEntity(springPiston = physics->CreateRectangle(_x , _y-3, _w , _h), _listener)
+	{
+
+		// Crear base del muelle
+		springBase = physics->CreateRectangle2(_x , _y, _w, _h);
+
+		// Definir el prismatic joint
+		b2PrismaticJointDef prismaticJointConfig;
+		prismaticJointConfig.bodyA = springBase->body;
+		prismaticJointConfig.bodyB = springPiston->body;
+		prismaticJointConfig.collideConnected = false;
+		prismaticJointConfig.localAnchorA.Set(0, 0);
+		prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(_h * 0.05) / 2);
+
+		// Configurar el eje de movimiento en el eje Y
+		prismaticJointConfig.localAxisA.Set(0, 1);
+
+		// Límites de movimiento
+		prismaticJointConfig.enableLimit = true;
+		prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite abajo
+		prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite arriba
+
+		// Configurar fuerza del muelle
+		prismaticJointConfig.enableMotor = true;
+		prismaticJointConfig.maxMotorForce = 10000.0f; //Fuerza del muelle
+		prismaticJointConfig.motorSpeed = 0.0f; //Velocidad inicial del muelle
+
+		// Crear el prismatic joint
+		springJoint = (b2PrismaticJoint*)physics->world->CreateJoint(&prismaticJointConfig);
+	}
+
+	void Update() override
+	{
+		int x, y;
+		springPiston->GetPhysicPosition(x, y);
+		printf("VECTOR %i, %i", x,y);
+
+		if (IsKeyDown(KEY_S))
+		{
+			// Cargas el muelle con la 'S'
+			springJoint->SetMotorSpeed(10000.0f);
+			springJoint->SetMaxMotorForce(10000.0f);
+		}
+		else if (IsKeyReleased(KEY_S))
+		{
+			// Se activa el rebote cuando sueltas la 'S'
+			springJoint->SetMotorSpeed(-10000.0f); // Velocidad de rebote hacia arriba
+		}
+		else
+		{
+			// Desactivas el muelle si no aprietas la 'S'
+			springJoint->SetMotorSpeed(0.0f);
+		}
+
+	}
+
+private:
+
+	PhysBody* springPiston;
+	PhysBody* springBase;
+	b2PrismaticJoint* springJoint;	
+
+};
 
 
 //class Box : public PhysicEntity
@@ -634,8 +725,8 @@ bool ModuleGame::Start()
 
 	fondo = LoadTexture("Assets/Fondo.png");
 	pokeball = LoadTexture("Assets/pokeball.png");
-	//left_flip = LoadTexture("Assets/leftFlipper.png");
-	//right_flip = LoadTexture("Assets/rightFlipper.png");
+	leftFlipperTexture = LoadTexture("Assets/leftFlipper.png");
+	rightFlipperTexture = LoadTexture("Assets/rightFlipper.png");
 	voltorb = LoadTexture("Assets/voltorb.png");
 	voltorbChocado = LoadTexture("Assets/voltorbChocado.png");
 
@@ -654,10 +745,11 @@ bool ModuleGame::Start()
 	entities.emplace_back(new UpperRightCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new DownLeftCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
-
-
-	/*entities.emplace_back(new Left_Flipper(App->physics, 188, 812, this, left_flip));
-	entities.emplace_back(new Right_Flipper(App->physics, 299, 812, this, right_flip));*/
+	
+	entities.emplace_back(new InvisibleSpring(App->physics, 506, 862, 20, 2, this));
+	
+	entities.emplace_back(new Left_Flipper(App->physics, 198, 810, this, leftFlipperTexture));
+	entities.emplace_back(new Right_Flipper(App->physics, 293, 810, this, rightFlipperTexture));
 
 	entities.emplace_back(new Voltorb(App->physics, 280, 260, this, voltorb));
 	entities.emplace_back(new Voltorb(App->physics, 210, 297, this, voltorb));

@@ -33,7 +33,7 @@ bool ModulePhysics::Start()
 	int y = 30;
 
 
-	CreateSpring(SCREEN_WIDTH - 30, SCREEN_HEIGHT - 100, 30, 50);
+	/*CreateSpring(SCREEN_WIDTH - 30, SCREEN_HEIGHT - 100, 30, 50);*/
 	// Crea el contorno del pinball
 
 
@@ -78,12 +78,12 @@ bool ModulePhysics::Start()
 	//b2Body* ground = world->CreateBody(&bd);
 	/*rFlipper = nullptr;
 	lFlipper = nullptr;*/
-	lJoint = nullptr;
-	rJoint = nullptr;
-	leftFlipperTexture = LoadTexture("Assets/leftFlipper.png");
-	rightFlipperTexture = LoadTexture("Assets/rightFlipper.png");
+	/*lJoint = nullptr;
+	rJoint = nullptr;*/
+	/*leftFlipperTexture = LoadTexture("Assets/leftFlipper.png");
+	rightFlipperTexture = LoadTexture("Assets/rightFlipper.png");*/
 
-	Create2Flipper();
+	/*Create2Flipper();*/
 
 	return true;
 }
@@ -125,38 +125,38 @@ update_status ModulePhysics::PostUpdate()
 		return UPDATE_CONTINUE;
 	}
 
-	if (IsKeyDown(KEY_S))
-	{
-		// Cargas el muelle con la 'S'
-		springJoint->SetMotorSpeed(10000.0f);
-		springJoint->SetMaxMotorForce(10000.0f);
-	}
-	else if (IsKeyReleased(KEY_S))
-	{
-		// Se activa el rebote cuando sueltas la 'S'
-		springJoint->SetMotorSpeed(-10000.0f); // Velocidad de rebote hacia arriba
-	}
-	else
-	{
-		// Desactivas el muelle si no aprietas la 'S'
-		springJoint->SetMotorSpeed(0.0f);
-	}
-	if (IsKeyDown(KEY_A))
-	{
-		lJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
-	}
-	else {
-		lJoint->SetMotorSpeed(5.0f); // Detener
-	}
+	//if (IsKeyDown(KEY_S))
+	//{
+	//	// Cargas el muelle con la 'S'
+	//	springJoint->SetMotorSpeed(10000.0f);
+	//	springJoint->SetMaxMotorForce(10000.0f);
+	//}
+	//else if (IsKeyReleased(KEY_S))
+	//{
+	//	// Se activa el rebote cuando sueltas la 'S'
+	//	springJoint->SetMotorSpeed(-10000.0f); // Velocidad de rebote hacia arriba
+	//}
+	//else
+	//{
+	//	// Desactivas el muelle si no aprietas la 'S'
+	//	springJoint->SetMotorSpeed(0.0f);
+	//}
+	//if (IsKeyDown(KEY_A))
+	//{
+	//	lJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
+	//}
+	//else {
+	//	lJoint->SetMotorSpeed(5.0f); // Detener
+	//}
 
-	if (IsKeyDown(KEY_D))
-	{
-		rJoint->SetMotorSpeed(10.0f); // Rotar a la derecha
-	}
-	else
-	{
-		rJoint->SetMotorSpeed(-5.0f); // Detener
-	}
+	//if (IsKeyDown(KEY_D))
+	//{
+	//	rJoint->SetMotorSpeed(10.0f); // Rotar a la derecha
+	//}
+	//else
+	//{
+	//	rJoint->SetMotorSpeed(-5.0f); // Detener
+	//}
 
 
 	// Bonus code: this will iterate all objects in the world and draw the circles
@@ -231,7 +231,7 @@ update_status ModulePhysics::PostUpdate()
 			}
 
 
-			if (b == leftFlipper->body)
+			/*if (b == leftFlipper->body)
 			{
 
 				b2Vec2 pos = leftFlipper->body->GetPosition();
@@ -252,7 +252,7 @@ update_status ModulePhysics::PostUpdate()
 				Vector2 origin = { rightFlipperTexture.width * SCALE - 5 * SCALE, rightFlipperTexture.height * SCALE * 0.25 };
 				float rotation = b->GetAngle() * RAD2DEG + 120 * RAD2DEG;
 				DrawTexturePro(rightFlipperTexture, source, dest, origin, rotation, WHITE);
-			}
+			}*/
 
 		}
 	}
@@ -382,75 +382,75 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateEdge(int x, int y, const int* points, int size)
-{
-	b2Vec2* vertices = new b2Vec2[size / 2];
-	for (int i = 0; i < size / 2; ++i) {
-		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
-	}
+//PhysBody* ModulePhysics::CreateEdge(int x, int y, const int* points, int size)
+//{
+//	b2Vec2* vertices = new b2Vec2[size / 2];
+//	for (int i = 0; i < size / 2; ++i) {
+//		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
+//	}
+//
+//	b2BodyDef bodyDef;
+//	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+//	b2Body* b = world->CreateBody(&bodyDef);
+//
+//	b2EdgeShape edgeShape;
+//
+//	b2FixtureDef fixture;
+//	fixture.shape = &edgeShape;
+//	fixture.density = 1.0f;
+//
+//
+//	for (int i = 0; i < (134 / 2) - 1; ++i) {
+//
+//		edgeShape.SetTwoSided(vertices[i], vertices[i + 1]);
+//		b->CreateFixture(&fixture);
+//	}
+//
+//	delete[] vertices;
+//
+//	PhysBody* pbody = new PhysBody();
+//	pbody->body = b;
+//
+//	return pbody;
+//}
 
-	b2BodyDef bodyDef;
-	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
-	b2Body* b = world->CreateBody(&bodyDef);
-
-	b2EdgeShape edgeShape;
-
-	b2FixtureDef fixture;
-	fixture.shape = &edgeShape;
-	fixture.density = 1.0f;
-
-
-	for (int i = 0; i < (134 / 2) - 1; ++i) {
-
-		edgeShape.SetTwoSided(vertices[i], vertices[i + 1]);
-		b->CreateFixture(&fixture);
-	}
-
-	delete[] vertices;
-
-	PhysBody* pbody = new PhysBody();
-	pbody->body = b;
-
-	return pbody;
-}
-
-void ModulePhysics::Create2Flipper()
-{
-
-
-	PhysBody* Box1;
-	PhysBody* Box2;
-
-	Box1 = CreateRectangle2(176, 810, 5, 5);
-	leftFlipper = CreateRectangle(198, 810, 30, 10);
-	Box2 = CreateRectangle2(315, 810, 5, 5);
-	rightFlipper = CreateRectangle(293, 810, 30, 10);
-
-	b2RevoluteJointDef jointDef;
-	jointDef.Initialize(Box1->body, leftFlipper->body, b2Vec2(PIXEL_TO_METERS(175), PIXEL_TO_METERS(810)));
-	jointDef.enableMotor = true;
-	jointDef.motorSpeed = 0.0f;
-	jointDef.maxMotorTorque = 200.0f;
-	jointDef.enableLimit = true;
-	jointDef.lowerAngle = -25 * b2_pi / 180.0f;  // Limite inferior en radianes (-20 grados)
-	jointDef.upperAngle = 25 * b2_pi / 180.0f;   // Limite superior en radianes (20 grados)
-
-	// Crear la unión en el mundo de Box2D
-	lJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
-
-	b2RevoluteJointDef jointDefRight;
-	jointDefRight.Initialize(Box2->body, rightFlipper->body, b2Vec2(PIXEL_TO_METERS(315), PIXEL_TO_METERS(810)));
-	jointDefRight.enableMotor = true;
-	jointDefRight.motorSpeed = 0.0f;
-	jointDefRight.maxMotorTorque = 200.0f;
-	jointDefRight.enableLimit = true;
-	jointDefRight.lowerAngle = -25 * b2_pi / 180.0f;  // Limite inferior en radianes (-20 grados)
-	jointDefRight.upperAngle = 25 * b2_pi / 180.0f;   // Limite superior en radianes (20 grados)
-
-	// Crear la unión en el mundo de Box2D
-	rJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDefRight);
-
-
+//void ModulePhysics::Create2Flipper()
+//{
+//
+//
+//	PhysBody* Box1;
+//	PhysBody* Box2;
+//
+//	Box1 = CreateRectangle2(176, 810, 5, 5);
+//	leftFlipper = CreateRectangle(198, 810, 30, 10);
+//	Box2 = CreateRectangle2(315, 810, 5, 5);
+//	rightFlipper = CreateRectangle(293, 810, 30, 10);
+//
+//	b2RevoluteJointDef jointDef;
+//	jointDef.Initialize(Box1->body, leftFlipper->body, b2Vec2(PIXEL_TO_METERS(175), PIXEL_TO_METERS(810)));
+//	jointDef.enableMotor = true;
+//	jointDef.motorSpeed = 0.0f;
+//	jointDef.maxMotorTorque = 200.0f;
+//	jointDef.enableLimit = true;
+//	jointDef.lowerAngle = -25 * b2_pi / 180.0f;  // Limite inferior en radianes (-20 grados)
+//	jointDef.upperAngle = 25 * b2_pi / 180.0f;   // Limite superior en radianes (20 grados)
+//
+//	// Crear la unión en el mundo de Box2D
+//	lJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
+//
+//	b2RevoluteJointDef jointDefRight;
+//	jointDefRight.Initialize(Box2->body, rightFlipper->body, b2Vec2(PIXEL_TO_METERS(315), PIXEL_TO_METERS(810)));
+//	jointDefRight.enableMotor = true;
+//	jointDefRight.motorSpeed = 0.0f;
+//	jointDefRight.maxMotorTorque = 200.0f;
+//	jointDefRight.enableLimit = true;
+//	jointDefRight.lowerAngle = -25 * b2_pi / 180.0f;  // Limite inferior en radianes (-20 grados)
+//	jointDefRight.upperAngle = 25 * b2_pi / 180.0f;   // Limite superior en radianes (20 grados)
+//
+//	// Crear la unión en el mundo de Box2D
+//	rJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDefRight);
+//
+//
 	//// Posiciones de los anclajes de las palas
 	//b2Vec2 anchorLeft(PIXEL_TO_METERS(178), PIXEL_TO_METERS(810));
 	//b2Vec2 anchorRight(PIXEL_TO_METERS(313), PIXEL_TO_METERS(810));
@@ -542,53 +542,53 @@ void ModulePhysics::Create2Flipper()
 	//pbody->joint = flipperJoint;  
 
 	/*return pbody;*/
-}
+//}
 
-PhysBody* ModulePhysics::CreateSpring(int posX, int posY, int springWidth, int springHeight)
-{
-	// Posicion en X del muelle
-	int adjustedX = posX - 35;
-	int adjustedY = posY + 95;
-
-	// Crear base del muelle
-	b2BodyDef baseBodyDef;
-	baseBodyDef.type = b2_staticBody;
-	baseBodyDef.position.Set(PIXEL_TO_METERS(adjustedX), PIXEL_TO_METERS(adjustedY));
-	springBase = world->CreateBody(&baseBodyDef);
-
-	// Reducir el tamaño del muelle
-	int reducedWidth = springWidth * 0.8;    // Reducir el ancho a un 80%
-	int reducedHeight = springHeight * 0.05;  // Reducir el alto a un 80%
-
-	// Crear cuerpo móvil del muelle
-	springPiston = CreateRectangle(adjustedX, adjustedY + reducedHeight / 2, reducedWidth, reducedHeight);
-
-	// Definir el prismatic joint
-	b2PrismaticJointDef prismaticJointConfig;
-	prismaticJointConfig.bodyA = springBase;
-	prismaticJointConfig.bodyB = springPiston->body;
-	prismaticJointConfig.collideConnected = false;
-	prismaticJointConfig.localAnchorA.Set(0, 0);
-	prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(reducedHeight) / 2);
-
-	// Configurar el eje de movimiento en el eje Y
-	prismaticJointConfig.localAxisA.Set(0, 1);
-
-	// Límites de movimiento
-	prismaticJointConfig.enableLimit = true;
-	prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite abajo
-	prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite arriba
-
-	// Configurar fuerza del muelle
-	prismaticJointConfig.enableMotor = true;
-	prismaticJointConfig.maxMotorForce = 10000.0f; //Fuerza del muelle
-	prismaticJointConfig.motorSpeed = 0.0f; //Velocidad inicial del muelle
-
-	// Crear el prismatic joint
-	springJoint = (b2PrismaticJoint*)world->CreateJoint(&prismaticJointConfig);
-
-	return springPiston;
-}
+//PhysBody* ModulePhysics::CreateSpring(int posX, int posY, int springWidth, int springHeight)
+//{
+//	// Posicion en X del muelle
+//	int adjustedX = posX - 35;
+//	int adjustedY = posY + 95;
+//
+//	// Crear base del muelle
+//	b2BodyDef baseBodyDef;
+//	baseBodyDef.type = b2_staticBody;
+//	baseBodyDef.position.Set(PIXEL_TO_METERS(adjustedX), PIXEL_TO_METERS(adjustedY));
+//	springBase = world->CreateBody(&baseBodyDef);
+//
+//	// Reducir el tamaño del muelle
+//	int reducedWidth = springWidth * 0.8;    // Reducir el ancho a un 80%
+//	int reducedHeight = springHeight * 0.05;  // Reducir el alto a un 80%
+//
+//	// Crear cuerpo móvil del muelle
+//	springPiston = CreateRectangle(adjustedX, adjustedY + reducedHeight / 2, reducedWidth, reducedHeight);
+//
+//	// Definir el prismatic joint
+//	b2PrismaticJointDef prismaticJointConfig;
+//	prismaticJointConfig.bodyA = springBase;
+//	prismaticJointConfig.bodyB = springPiston->body;
+//	prismaticJointConfig.collideConnected = false;
+//	prismaticJointConfig.localAnchorA.Set(0, 0);
+//	prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(reducedHeight) / 2);
+//
+//	// Configurar el eje de movimiento en el eje Y
+//	prismaticJointConfig.localAxisA.Set(0, 1);
+//
+//	// Límites de movimiento
+//	prismaticJointConfig.enableLimit = true;
+//	prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite abajo
+//	prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite arriba
+//
+//	// Configurar fuerza del muelle
+//	prismaticJointConfig.enableMotor = true;
+//	prismaticJointConfig.maxMotorForce = 10000.0f; //Fuerza del muelle
+//	prismaticJointConfig.motorSpeed = 0.0f; //Velocidad inicial del muelle
+//
+//	// Crear el prismatic joint
+//	springJoint = (b2PrismaticJoint*)world->CreateJoint(&prismaticJointConfig);
+//
+//	return springPiston;
+//}
 
 PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
 {

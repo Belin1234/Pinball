@@ -560,7 +560,6 @@ public:
 
 	void Update() override
 	{
-
 		if (IsKeyDown(KEY_S))
 		{
 			// Cargas el muelle con la 'S'

@@ -40,7 +40,7 @@ bool ModulePhysics::Start()
 
 	// Crea la colision de arriba
 
-	
+
 
 	// Crea la colision pequeña de arriba a la izquierda
 
@@ -235,13 +235,13 @@ update_status ModulePhysics::PostUpdate()
 			{
 
 				b2Vec2 pos = leftFlipper->body->GetPosition();
-				Vector2 position { (float)pos.x + 168, (float)pos.y + 790 }; 
+				Vector2 position { (float)pos.x + 168, (float)pos.y + 790 };
 				Rectangle source = { 0.0f, 0.0f, (float)leftFlipperTexture.width, (float)leftFlipperTexture.height };
 				Rectangle dest = { position.x, position.y, (float)leftFlipperTexture.width * SCALE, (float)leftFlipperTexture.height * SCALE };
 				Vector2 origin = { 5*SCALE, leftFlipperTexture.height*SCALE*0.25};
 				float rotation = b->GetAngle() * RAD2DEG - 120 * RAD2DEG;
 				DrawTexturePro(leftFlipperTexture, source, dest, origin, rotation, WHITE);
-				
+
 			}
 			else if (b == rightFlipper->body)
 			{
@@ -263,9 +263,12 @@ update_status ModulePhysics::PostUpdate()
 
 PhysBody* ModulePhysics::CreateCircle(int x, int y, float radius)
 {
+	PhysBody* pbody = new PhysBody();
+	
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&body);
 
@@ -277,7 +280,7 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, float radius)
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
+	
 	pbody->body = b;
 
 	return pbody;
@@ -285,9 +288,12 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, float radius)
 
 PhysBody* ModulePhysics::CreateCircle2(int x, int y, float radius)
 {
+	PhysBody* pbody = new PhysBody();
+	
 	b2BodyDef body;
 	body.type = b2_staticBody;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	body.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&body);
 
@@ -296,10 +302,11 @@ PhysBody* ModulePhysics::CreateCircle2(int x, int y, float radius)
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
+	fixture.restitution = 2.0f;
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
+
 	pbody->body = b;
 
 	return pbody;
@@ -307,9 +314,12 @@ PhysBody* ModulePhysics::CreateCircle2(int x, int y, float radius)
 
 PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 {
+	PhysBody* pbody = new PhysBody();
+	
 	b2BodyDef boxBodyDef;
 	boxBodyDef.type = b2_dynamicBody;
 	boxBodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	boxBodyDef.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&boxBodyDef);
 
@@ -322,7 +332,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 
 	b->CreateFixture(&boxFixture);
 
-	PhysBody* pbody = new PhysBody();
+	
 	pbody->body = b;
 
 	return pbody;
@@ -330,9 +340,12 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 
 PhysBody* ModulePhysics::CreateRectangle2(int x, int y, int width, int height)
 {
+	PhysBody* pbody = new PhysBody();
+	
 	b2BodyDef boxBodyDef;
 	boxBodyDef.type = b2_staticBody;
 	boxBodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	boxBodyDef.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
 
 	b2Body* b = world->CreateBody(&boxBodyDef);
 
@@ -345,7 +358,7 @@ PhysBody* ModulePhysics::CreateRectangle2(int x, int y, int width, int height)
 
 	b->CreateFixture(&boxFixture);
 
-	PhysBody* pbody = new PhysBody();
+	
 	pbody->body = b;
 
 	return pbody;
@@ -353,6 +366,8 @@ PhysBody* ModulePhysics::CreateRectangle2(int x, int y, int width, int height)
 
 PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 {
+	PhysBody* pbody = new PhysBody();
+	
 	b2Vec2* vertices = new b2Vec2[size / 2];
 	for (int i = 0; i < size / 2; ++i) {
 		vertices[i] = b2Vec2(PIXEL_TO_METERS(points[i * 2] * SCALE), PIXEL_TO_METERS(points[i * 2 + 1] * SCALE));
@@ -361,6 +376,8 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
+	bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(pbody);
+	
 	b2Body* b = world->CreateBody(&bodyDef);
 
 	b2ChainShape chainShape;
@@ -374,7 +391,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, const int* points, int size)
 
 	b->CreateFixture(&fixture);
 
-	PhysBody* pbody = new PhysBody();
+	
 	pbody->body = b;
 
 
@@ -647,15 +664,15 @@ void PhysBody::SetRotation(float r)
 	rotation = r;
 }
 
-void PhysBody::Rotate(float angle) {
-
-	if (body) {
-		
-		b2Vec2 position = body->GetPosition();
-		float currentAngle = body->GetAngle();
-		body->SetTransform(position, currentAngle + angle);
-	}
-}
+//void PhysBody::Rotate(float angle) {
+//
+//	if (body) {
+//		
+//		b2Vec2 position = body->GetPosition();
+//		float currentAngle = body->GetAngle();
+//		body->SetTransform(position, currentAngle + angle);
+//	}
+//}
 
 bool PhysBody::Contains(int x, int y) const
 {
@@ -715,9 +732,13 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	PhysBody* physA = (PhysBody*)dataA.pointer;
 	PhysBody* physB = (PhysBody*)dataB.pointer;
 
-	if (physA && physA->listener != NULL)
+	if (physA && physA->listener != NULL) {
 		physA->listener->OnCollision(physA, physB);
+	}
 
-	if (physB && physB->listener != NULL)
+
+	if (physB && physB->listener != NULL) {
 		physB->listener->OnCollision(physB, physA);
+	}
+		
 }

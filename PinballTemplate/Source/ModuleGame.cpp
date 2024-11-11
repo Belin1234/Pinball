@@ -25,20 +25,18 @@ public:
 		return 0;
 	}
 
-	CollisionType GetCollisionType() const {
-		return collisionType;
-	}
+
 	PhysBody* body;
 protected:
-	
+
 	Module* listener;
-	CollisionType collisionType;
+
 };
 
 class Perimeter : public PhysicEntity
 {
 	static constexpr int perimeter[134] = {
-		
+
 		192, 0,
 
 		192, 280,
@@ -136,7 +134,7 @@ class UpperCollision : public PhysicEntity
 		79, 29,
 		64, 31,
 		52, 35
-		
+
 
 	};
 
@@ -159,7 +157,7 @@ class LeftLittleCollision : public PhysicEntity
 		67, 49,
 		71, 47,
 		71, 61
-		
+
 
 	};
 
@@ -183,8 +181,8 @@ class RightLittleCollision : public PhysicEntity
 		88, 43,
 		94, 43,
 		94, 57
-		
-		
+
+
 
 	};
 
@@ -315,14 +313,14 @@ class DownLeftCollision : public PhysicEntity
 {
 
 	static constexpr int down_left_collision[12] = {
-	
+
 	24, 207,
 	24, 232,
 	56, 254,
 	52, 261,
 	20, 240,
 	20, 207
-	
+
 	};
 
 
@@ -342,7 +340,7 @@ class DownRightCollision : public PhysicEntity
 {
 
 	static constexpr int down_right_collision[12] = {
-	
+
 	136, 207,
 	140, 207,
 	140, 239,
@@ -371,7 +369,7 @@ public:
 		: PhysicEntity(physics->CreateCircle(_x, _y, 5.4f * SCALE), _listener)
 		, texture(_texture)
 	{
-		collisionType = POKEBALL;
+		body->collisionType = POKEBALL;
 	}
 
 	void Update() override
@@ -386,7 +384,7 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-		
+
 		//if (y > 900) {
 		//	
 		//	delete body;
@@ -399,7 +397,7 @@ private:
 
 };
 
-class Left_Flipper: public PhysicEntity
+class Left_Flipper : public PhysicEntity
 {
 public:
 	//static constexpr int left_flipper[12] = {
@@ -428,7 +426,7 @@ public:
 		jointDef.upperAngle = 25 * DEG2RAD;   // Limite superior en radianes (20 grados)
 
 		// Crear la unión en el mundo de Box2D
-	    leftJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
+		leftJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
 
 	}
 
@@ -449,12 +447,12 @@ public:
 		else {
 			leftJoint->SetMotorSpeed(5.0f); // Detener
 		}
-		
+
 
 	}
 
 private:
-	
+
 	Texture2D texture;
 	PhysBody* Box1;
 	b2RevoluteJoint* leftJoint;
@@ -510,12 +508,12 @@ public:
 		else {
 			rightJoint->SetMotorSpeed(-5.0f); // Detener
 		}
-		
+
 
 	}
 
 private:
-	
+
 	Texture2D texture;
 	PhysBody* Box2;
 	b2RevoluteJoint* rightJoint;
@@ -527,11 +525,11 @@ class InvisibleSpring : public PhysicEntity
 public:
 
 	InvisibleSpring(ModulePhysics* physics, int _x, int _y, float _w, float _h, Module* _listener)
-		: PhysicEntity(springPiston = physics->CreateRectangle(_x , _y-3, _w , _h), _listener)
+		: PhysicEntity(springPiston = physics->CreateRectangle(_x, _y - 3, _w, _h), _listener)
 	{
 
 		// Crear base del muelle
-		springBase = physics->CreateRectangle2(_x , _y, _w, _h);
+		springBase = physics->CreateRectangle2(_x, _y, _w, _h);
 
 		// Definir el prismatic joint
 		b2PrismaticJointDef prismaticJointConfig;
@@ -583,7 +581,7 @@ private:
 
 	PhysBody* springPiston;
 	PhysBody* springBase;
-	b2PrismaticJoint* springJoint;	
+	b2PrismaticJoint* springJoint;
 
 };
 
@@ -681,7 +679,7 @@ public:
 		: PhysicEntity(physics->CreateCircle2(_x, _y, 6.5f * SCALE), _listener)
 		, texture(_texture)
 	{
-		collisionType = VOLTORB;
+		body->collisionType = VOLTORB;
 	}
 
 	void Update() override
@@ -730,7 +728,7 @@ bool ModuleGame::Start()
 
 
 	// Sensor rectangular que me ralla
-	/*sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);*/
+	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
 
 	entities.emplace_back(new Perimeter(App->physics, 5, 30, this));
 	entities.emplace_back(new UpperCollision(App->physics, 5, 30, this));
@@ -741,9 +739,9 @@ bool ModuleGame::Start()
 	entities.emplace_back(new UpperRightCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new DownLeftCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
-	
+
 	entities.emplace_back(new InvisibleSpring(App->physics, 506, 862, 20, 2, this));
-	
+
 	entities.emplace_back(new Left_Flipper(App->physics, 198, 810, this, leftFlipperTexture));
 	entities.emplace_back(new Right_Flipper(App->physics, 293, 810, this, rightFlipperTexture));
 
@@ -769,8 +767,8 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-	
-	
+
+
 	if (IsKeyPressed(KEY_ONE)) {
 
 		entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
@@ -810,7 +808,7 @@ update_status ModuleGame::Update()
 				ray_hit = hit;
 			}
 		}
-		
+
 	}
 
 
@@ -828,7 +826,7 @@ update_status ModuleGame::Update()
 			DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
 		}
 	}
-	
+
 	//int length = entities.size();
 	//for (int i = 0; i < length; i++) {
 	//	if (entities[i]->GetCollisionType() == POKEBALL) {
@@ -852,7 +850,7 @@ update_status ModuleGame::Update()
 		int x, y;
 		entities[i]->body->GetPhysicPosition(x, y);
 
-		if (entities[i]->GetCollisionType() == POKEBALL && y > 850)
+		if (entities[i]->body->collisionType == POKEBALL && y > 850)
 		{
 			// Sustituye por nullptr en lugar de eliminar y borrar inmediatamente
 			delete entities[i];
@@ -882,20 +880,18 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	bool hascollisionwithvoltorb = false;
 
-	int length = entities.size();
-	for (int i = 0; i < length; i++)
-	{
-		if (bodyA == entities[i]->body && entities[i]->GetCollisionType() == VOLTORB ){
-			hascollisionwithvoltorb = true;
-			printf("Collision detected:       %i", score);
-			break;
-		}
-	}
-	if (hascollisionwithvoltorb) { 
-		score += 500;
-		
+	
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == VOLTORB)) {
+		hascollisionwithvoltorb = true;
+		App->renderer->score += 500;
+
 	}
 	
+	if (hascollisionwithvoltorb) {
+		
+
+	}
+
 
 	/*App->audio->PlayFx(bonus_fx);*/
 }

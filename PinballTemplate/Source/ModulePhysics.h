@@ -17,6 +17,12 @@
 class b2World;
 class b2Body;
 
+enum CollisionType
+{
+	DEFAULT,
+	POKEBALL,
+	VOLTORB
+};
 class PhysBody
 {
 public:
@@ -29,14 +35,18 @@ public:
 	bool Contains(int x, int y) const;
 	int RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 	void SetRotation(float r);
-	void Rotate(float angle);
+	/*void Rotate(float angle);*/
+	/*CollisionType GetCollisionType() const;*/
 
 
 public:
+
+	CollisionType collisionType;
+
 	int width, height;
 	float rotation;
+
 	b2Body* body;
-	b2RevoluteJoint* joint;
 	Module* listener;
 };
 
@@ -58,7 +68,7 @@ public:
 	PhysBody* CreateRectangle2(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	/*PhysBody* CreateEdge(int x, int y, const int* points, int size);*/
-	
+
 	//void Create2Flipper();
 	/*PhysBody* CreateSpring(int x, int y, int width, int height);*/
 	/*PhysBody* springPiston;*/

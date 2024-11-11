@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 
+//------
 enum main_states
 {
 	MAIN_CREATION,

@@ -52,6 +52,9 @@ public:
 	int score;
 	int lives;
 	bool offCollision;
+	bool left;
+	float timer;
+	bool hitPika;
 
 	uint32 bonus_fx;
 	Music musica;

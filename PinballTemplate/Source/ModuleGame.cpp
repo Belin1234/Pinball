@@ -1514,7 +1514,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LeftDiglett(App->physics, 28, 192, this, leftDiglettT));
 	entities.emplace_back(new RightDiglett(App->physics, 136, 192, this, rightDiglettT));
 
-	entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));
+	/*entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));*/
 
 
 	// FALTA CUBRIR LOS CUADRADITOS CON ESTO
@@ -1525,7 +1525,9 @@ bool ModuleGame::Start()
 	score = 0;
 	lives = 3;
 	offCollision = false;
-
+	left = true;
+	timer = 0.0f;
+	hitPika = false;
 	return ret;
 }
 
@@ -1618,8 +1620,38 @@ update_status ModuleGame::Update()
 	//		printf("LUEGO: %i", lives);
 	//	}
 	//}
-	
-	
+
+// Actualiza el temporizador
+	timer += GetFrameTime();
+
+	// Verifica si han pasado los 2 segundos
+	if (timer >= 2.0f) {
+		// Reinicia el temporizador
+		timer = 0.0f;
+
+		// Busca y elimina la entidad Pikachu actual en entities
+		for (auto it = entities.begin(); it != entities.end(); ++it) {
+			if (Pikachu* pikachuEntity = dynamic_cast<Pikachu*>(*it)) {  // Verifica si es un objeto Pikachu
+				// Elimina el cuerpo físico de Box2D
+				App->physics->world->DestroyBody(pikachuEntity->body->body);
+
+				// Libera la memoria de la entidad completa
+				delete* it;
+				entities.erase(it);  // Elimina el puntero del vector
+				break;  // Sale del bucle tras encontrar y borrar el último Pikachu
+			}
+		}
+
+		// Alterna la posición de Pikachu y crea un nuevo objeto
+		if (left) {
+			entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));
+		}
+		else {
+			entities.emplace_back(new Pikachu(App->physics, 397, 30, this, pikachu));
+		}
+		left = !left;  // Cambia el estado de la variable left
+	}
+
 	for (int i = 0; i < entities.size(); ++i)
 	{
 		int x, y;

@@ -1211,8 +1211,6 @@ bool ModuleGame::Start()
 	rightDiglettT = LoadTexture("Assets/RightDiglett.png");
 	upperRight = LoadTexture("Assets/UpperRightCollision.png");
 
-	//InitAudioDevice();              // Initialize audio device
-
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 	if (App != nullptr && App->audio != nullptr) {
 		bonus_fx = App->audio->LoadFx("path_to_sound_file.wav");

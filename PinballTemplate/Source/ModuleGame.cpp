@@ -663,7 +663,7 @@ public:
 
 		if (IsKeyDown(KEY_A))
 		{
-			leftJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
+			leftJoint->SetMotorSpeed(-12.5f); // Rotar a la izquierda
 		}
 		else {
 			leftJoint->SetMotorSpeed(5.0f); // Detener
@@ -724,7 +724,7 @@ public:
 
 		if (IsKeyDown(KEY_D))
 		{
-			rightJoint->SetMotorSpeed(10.0f); // Rotar a la izquierda
+			rightJoint->SetMotorSpeed(12.5f); // Rotar a la izquierda
 		}
 		else {
 			rightJoint->SetMotorSpeed(-5.0f); // Detener

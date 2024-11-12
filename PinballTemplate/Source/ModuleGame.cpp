@@ -349,7 +349,7 @@ public:
 		: PhysicEntity(physics->CreateRectangleSensor(_x + 140, _y + 70, 42, 20), _listener)
 		, texture(_texture)
 	{
-		Box = physics->CreateChain(_x, _y, upper_right_collision, 54);
+		Box = physics->CreateChain2(_x, _y, upper_right_collision, 54);
 		mouth = physics->CreateChain(1000, 1000, mouthCollision, 12);
 		body->collisionType = PALET;
 		hitTimer = 0.0f;
@@ -1609,10 +1609,8 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LeftDiglett(App->physics, 28, 192, this, leftDiglettT));
 	entities.emplace_back(new RightDiglett(App->physics, 136, 192, this, rightDiglettT));
 
-	/*entities.emplace_back(new DittoOpen(App->physics, 5, 30, this, ditto1));*/ // en pruebas
-	/*entities.emplace_back(new DittoClosed(App->physics, 5, 30, this, ditto2));*/
-
 	entities.emplace_back(new EntrySensor(App->physics, 9, 96, this));
+
 	// FALTA CUBRIR LOS CUADRADITOS CON ESTO
 	entities.emplace_back(new LittlePoints(App->physics, 39, 93, this));
 	entities.emplace_back(new LittlePoints(App->physics, 40, 127, this));
@@ -1716,7 +1714,7 @@ update_status ModuleGame::Update()
 		}
 	}
 
-	// Movimiento Ditto
+	// Ditto movement
 	// Eliminar la entidad previa si existe
 	for (auto it = entities.begin(); it != entities.end(); ++it) {
 		// Si la entidad es de tipo DittoOpen o DittoClosed, se elimina
@@ -1744,7 +1742,7 @@ update_status ModuleGame::Update()
 
 
 
-	//Movimiento Pikachu
+	// Pikachu movement
     // Actualiza el temporizador
 	timer += GetFrameTime();
 
@@ -1776,6 +1774,8 @@ update_status ModuleGame::Update()
 		left = !left;  // Cambia el estado de la variable left
 	}
 
+
+	// Pokeball and offCollision behaviour
 	for (int i = 0; i < entities.size(); ++i)
 	{
 		int x, y;

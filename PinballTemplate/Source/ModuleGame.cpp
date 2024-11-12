@@ -1434,6 +1434,99 @@ public:
 
 };
 
+class EntrySensor : public PhysicEntity
+{
+public:
+	EntrySensor(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateRectangleSensor(_x, _y, 15, 15), _listener)
+
+	{
+		body->collisionType = ENTRY;
+
+	}
+
+	void Update() override {}
+
+};
+
+class DittoOpen : public PhysicEntity
+{
+	static constexpr int ditto1[12] = {
+	9, 73,
+	2, 19,
+	29, 30,
+	21, 39,
+	14, 52,
+	10, 64
+	};
+
+public:
+	DittoOpen(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, ditto1, 12), _listener)
+		, texture(texture)
+
+	{
+		
+
+	}
+
+	void Update() override {
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x + 45, (float)y + 140 };
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height-0.5};
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+	
+
+	}
+private:
+	Texture2D texture;
+};
+
+class DittoClosed : public PhysicEntity
+{
+	static constexpr int ditto2[14] = {
+	9, 94,
+	4, 25,
+	40, 42,
+	31, 49,
+	23, 58,
+	16, 69,
+	11, 82
+	};
+
+public:
+	DittoClosed(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, ditto2, 14), _listener)
+		, texture(texture)
+
+	{
+
+
+	}
+
+	void Update() override {
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Vector2 position{ (float)x + 65, (float)y + 185 };
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height - 0.5 };
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+
+	}
+private:
+	Texture2D texture;
+};
+
+
 
 
 
@@ -1466,6 +1559,8 @@ bool ModuleGame::Start()
 	rightDiglettT = LoadTexture("Assets/RightDiglett.png");
 	upperRight = LoadTexture("Assets/UpperRight.png");
 	pikachu = LoadTexture("Assets/Pikachu.png");
+	ditto1 = LoadTexture("Assets/Ditto1.png");
+	ditto2 = LoadTexture("Assets/Ditto2.png");
 
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 	if (App != nullptr && App->audio != nullptr) {
@@ -1514,9 +1609,10 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LeftDiglett(App->physics, 28, 192, this, leftDiglettT));
 	entities.emplace_back(new RightDiglett(App->physics, 136, 192, this, rightDiglettT));
 
-	/*entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));*/
+	/*entities.emplace_back(new DittoOpen(App->physics, 5, 30, this, ditto1));*/ // en pruebas
+	/*entities.emplace_back(new DittoClosed(App->physics, 5, 30, this, ditto2));*/
 
-
+	entities.emplace_back(new EntrySensor(App->physics, 9, 96, this));
 	// FALTA CUBRIR LOS CUADRADITOS CON ESTO
 	entities.emplace_back(new LittlePoints(App->physics, 39, 93, this));
 
@@ -1528,6 +1624,7 @@ bool ModuleGame::Start()
 	left = true;
 	timer = 0.0f;
 	hitPika = false;
+	inside = false;
 	return ret;
 }
 
@@ -1603,25 +1700,36 @@ update_status ModuleGame::Update()
 		}
 	}
 
-	//int length = entities.size();
-	//for (int i = 0; i < length; i++) {
-	//	if (entities[i]->GetCollisionType() == POKEBALL) {
-	//		printf("ELIMINADO");
-	//		delete entities[i];
+	// Movimiento Ditto
+	// Eliminar la entidad previa si existe
+	for (auto it = entities.begin(); it != entities.end(); ++it) {
+		// Si la entidad es de tipo DittoOpen o DittoClosed, se elimina
+		if (dynamic_cast<DittoOpen*>(*it) || dynamic_cast<DittoClosed*>(*it)) {
+			// Asegúrate de que 'body' es un puntero al cuerpo de Box2D
+			if ((*it)->body != nullptr) {
+				// Destruir el cuerpo físico asociado
+				App->physics->world->DestroyBody((*it)->body->body);  // 'body->body' es el cuerpo físico de Box2D
+			}
 
-	//		if (lives > 0) {
-	//			entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
-	//		}
-	//		else {
-	//			lives = 0;
-	//		}
-	//		printf("ANTES: %i", lives);
-	//		lives -= 1;
-	//		printf("LUEGO: %i", lives);
-	//	}
-	//}
+			// Eliminar la entidad y sus recursos
+			delete* it;  // Eliminar la entidad
+			entities.erase(it);  // Eliminarla del vector
+			break;  // Salir del ciclo, ya que solo hay una instancia
+		}
+	}
 
-// Actualiza el temporizador
+	// Agregar la nueva entidad según el estado de "inside"
+	if (!inside) {
+		entities.emplace_back(new DittoOpen(App->physics, 5, 30, this, ditto1));
+	}
+	else {
+		entities.emplace_back(new DittoClosed(App->physics, 5, 30, this, ditto2));
+	}
+
+
+
+	//Movimiento Pikachu
+    // Actualiza el temporizador
 	timer += GetFrameTime();
 
 	// Verifica si han pasado los 2 segundos
@@ -1669,6 +1777,7 @@ update_status ModuleGame::Update()
 				// Sustituye por nullptr en lugar de eliminar y borrar inmediatamente
 				delete entities[i];
 				entities[i] = nullptr;
+				inside = false;
 
 				if (lives > 0)
 				{
@@ -1736,6 +1845,13 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 		App->renderer->score += 100;
 
 	}
+
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == ENTRY)) {
+		inside = true;
+	
+
+	}
+
 	
 
 

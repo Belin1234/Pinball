@@ -1519,6 +1519,22 @@ bool ModuleGame::Start()
 
 	// FALTA CUBRIR LOS CUADRADITOS CON ESTO
 	entities.emplace_back(new LittlePoints(App->physics, 39, 93, this));
+	entities.emplace_back(new LittlePoints(App->physics, 40, 127, this));
+	entities.emplace_back(new LittlePoints(App->physics, 20, 117, this));
+	entities.emplace_back(new LittlePoints(App->physics, 144, 117, this));
+	entities.emplace_back(new LittlePoints(App->physics, 148, 229, this));
+	entities.emplace_back(new LittlePoints(App->physics, 132, 229, this));
+	entities.emplace_back(new LittlePoints(App->physics, 16, 229, this));
+	entities.emplace_back(new LittlePoints(App->physics, 32, 229, this));
+	entities.emplace_back(new LittlePoints(App->physics, 30, 55, this));
+	entities.emplace_back(new LittlePoints(App->physics, 43, 63, this));
+	entities.emplace_back(new LittlePoints(App->physics, 135, 55, this));
+	entities.emplace_back(new LittlePoints(App->physics, 126, 63, this));
+	entities.emplace_back(new LittlePoints(App->physics, 104, 68, this));
+	entities.emplace_back(new LittlePoints(App->physics, 82, 67, this));
+	entities.emplace_back(new LittlePoints(App->physics, 60, 78, this));
+
+
 
 	/*entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));*/
 

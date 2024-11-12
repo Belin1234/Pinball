@@ -334,23 +334,159 @@ class UpperRightCollision : public PhysicEntity
 	110, 121
 	};
 
-
+	static constexpr int mouthCollision[12] = {
+	116, 87,
+	119, 82,
+	127, 82,
+	131, 87,
+	131, 93,
+	116, 93
+	};
+	
 
 public:
 	UpperRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-		: PhysicEntity(physics->CreateChain(_x, _y, upper_right_collision, 54), _listener)
+		: PhysicEntity(physics->CreateRectangleSensor(_x + 140, _y + 70, 42, 20), _listener)
 		, texture(_texture)
 	{
+		Box = physics->CreateChain(_x, _y, upper_right_collision, 54);
+		mouth = physics->CreateChain(1000, 1000, mouthCollision, 12);
+		body->collisionType = PALET;
+		hitTimer = 0.0f;
+		timer = 0.0f;
+		frameIndex = 0;
+		hitOn = false;
+		frameCounter = 0;
+		frameTotal = 0;
+		powerOn = false;
 
 	}
 
-	void Update() override {}
+	void Update() override {
+		int x = 435;
+		int y = 300;
+		Rectangle source;
+		Vector2 position{ (float)x, (float)y };
 
+		Rectangle dest = { position.x, position.y, 16.0f * SCALE - 3 , 16.0f * SCALE };
+		Vector2 origin = { 16.0f * SCALE / 2.0f, 16.0f * SCALE / 2.0f };
+		static float rotation = body->GetRotation() * RAD2DEG;
+
+		// Detecta colisión y empieza el temporizador solo si no está en colisión y no se ha ejecutado la animación
+		if (body->hit && !hitOn) {
+			hitOn = true;  // Iniciamos la animación en la colisión
+			hitTimer = 0.0f;  // Reiniciamos el temporizador
+			frameCounter = 0;  // Reseteamos el contador de frames
+		}
+
+		// Si estamos en colisión, incrementamos la animación
+		if (hitOn) {
+			hitTimer += GetFrameTime();  // Incrementa el temporizador de colisión
+
+			if (hitTimer >= 0.2f) {  // Si ha pasado suficiente tiempo (0.2 segundos)
+				hitTimer = 0.0f;  // Reiniciamos el temporizador
+
+				// Avanzamos los frames hasta alcanzar 4 frames en total
+				if (frameCounter < 4) {
+					frameIndex++;  // Avanzamos al siguiente frame
+					frameCounter++;  // Aumentamos el contador de frames
+					if (frameTotal < 16) {
+						frameTotal++;
+					}
+					
+				}
+			}
+
+			// Cuando hemos llegado al cuarto frame, detenemos la animación y desactivamos la colisión
+			if (frameCounter >= 4) {
+				body->hit = false;  // Desactivamos el estado de colisión
+				hitOn = false;  // Detenemos la animación
+			}
+
+			// Si el frameIndex supera el máximo de 5 (por la cantidad de frames en la animación), lo reseteamos a 0
+			if (frameIndex > 5) {
+				frameIndex = 0;
+			}
+		}
+
+		// Configuramos la selección del cuadro de la textura basado en frameIndex
+		source = { frameIndex * 16.0f, 32.0f, 16.0f, 16.0f };
+
+		// Dibujamos la textura en pantalla
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		///////////////////////////////////////////////////////////////////////////// TEXTURA RAYO
+		if (frameTotal == 16) {
+			powerOn = true;
+		}
+		
+		if (frameTotal >= 17 && !powerOn) {
+			frameTotal = 0;
+		}
+		dest = { position.x - 70, position.y - 78, 24.0f * SCALE, 32.0f * SCALE };
+		source = { frameTotal * 24.0f, 0.0f, 24.0f, 32.0f };
+
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		///////////////////////////////////////////////////////////////////////////////// TEXTURA BELLSPROUT
+
+
+
+
+
+		/*if (powerOn) {
+			mouth->ge
+		}*/
+
+		timer += GetFrameTime();
+		if (timer >= 1.0f) {
+			timer = 0.0f; // Reiniciar el temporizador
+			toggle = !toggle;  // Alternar entre true y false
+
+		}
+
+		if (toggle ) { // && !powerOn
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 0.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		/*else if (powerOn && !expulsion) {
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 54.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (powerOn && expulsion) {
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 81.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}*/
+		else if (!toggle ) { // && !powerOn
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 27.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		
+
+
+	
+	}
 
 private:
 
 	Texture2D texture;
-
+	PhysBody* Box;
+	float hitTimer;
+	float timer;
+	int  frameIndex;
+	bool toggle;
+	bool hitOn;	
+	int frameCounter;
+	int frameTotal;
+	bool powerOn;
+	bool expulsion;
+	PhysBody* mouth;
 };
 
 class DownLeftCollision : public PhysicEntity
@@ -1209,7 +1345,7 @@ bool ModuleGame::Start()
 	staryu = LoadTexture("Assets/Staryu.png");
 	leftDiglettT = LoadTexture("Assets/LeftDiglett.png");
 	rightDiglettT = LoadTexture("Assets/RightDiglett.png");
-	upperRight = LoadTexture("Assets/UpperRightCollision.png");
+	upperRight = LoadTexture("Assets/UpperRight.png");
 
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 	if (App != nullptr && App->audio != nullptr) {
@@ -1424,6 +1560,13 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 		}
 		
 	}
+
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PALET)) {
+		bodyB->hit = true;
+		App->renderer->score += 500;
+
+	}
+	
 	
 
 

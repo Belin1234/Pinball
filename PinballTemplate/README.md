@@ -1,8 +1,8 @@
-# {Project Name}
+# {Pokemon Pinball GBC 1999}
 
 ## Description
 
-{project description}
+This is a Physics 2 class project of the CITM UPC video game design and development degree. In this project we have emulated the 1999 Pokemon Pinball game for the Game Boy Color. Originally in the GBC console to have two screens the game simulated two scenarios, in this emulation that we have created we have joined the two screens to play comfortably in the same scene.
 
 ## Key Features
 
@@ -17,10 +17,10 @@
 
 ## Developers
 
- - {Dev01} - {Role(s)}
- - {Dev02} - {Role(s)}
- - {Dev03} - {Role(s)}
- - {Dev04} - {Role(s)}
+ - Adrià Belinchón - Code
+ - Pablo Sanjose - Code
+ - Víctor González - Code
+ - Claudia Ruiz - Code
 
 ## License
 

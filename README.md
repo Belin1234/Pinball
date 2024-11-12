@@ -13,7 +13,13 @@ This is a Physics 2 class project of the CITM UPC video game design and developm
  
 ## Controls
 
- - {ControlsScheme}
+ - Left arrow to move left lever
+ - Right arrow to move right lever
+ - Down arrow to activate the dock
+Debug Mode:
+ - Button 1 for spawning pokeball on the dock
+ - F1 to view box collisions
+ - Button 2 to spawn a pokeball
 
 ## Developers
 

@@ -23,6 +23,7 @@ This is a Physics 2 class project of the CITM UPC video game design and developm
  - Left arrow to move left lever
  - Right arrow to move right lever
  - Down arrow to activate the dock
+ - R to restart game
 
 Debug Mode:
 
@@ -40,5 +41,3 @@ Debug Mode:
 ## License
 
 This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check [LICENSE](LICENSE) for further details.
-
-{AdditionalLicenses}

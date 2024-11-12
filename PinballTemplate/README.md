@@ -6,16 +6,24 @@ This is a Physics 2 class project of the CITM UPC video game design and developm
 
 ## Key Features
 
- - {Feature01}
- - {Feature02}
- - {Feature03}
- - {Feature04}
+ - Flippers using revolute joints
+ - Spring using a spring joint
+ - Voltorbs as collisions with impulse
+ - Triangles as collisions with impulse
+ - Pikachu teleporting with a collision impulse
+ - Digletts with a combo that if you hit the same diglett 3 times then it gives you a bonus for the combo
+ - Ditto movement with a sensor
+ - Little sensors which each one gives you 100 points
+ - Recharge system with a Bellsprout impulse ability (unfinished)
+ - Score, lives and fps
+ - Music and audio effects
  
 ## Controls
 
  - Left arrow to move left lever
  - Right arrow to move right lever
  - Down arrow to activate the dock
+ - R to restart game
 
 Debug Mode:
 
@@ -33,5 +41,3 @@ Debug Mode:
 ## License
 
 This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check [LICENSE](LICENSE) for further details.
-
-{AdditionalLicenses}

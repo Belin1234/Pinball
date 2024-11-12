@@ -23,6 +23,7 @@ This is a Physics 2 class project of the CITM UPC video game design and developm
  - Left arrow to move left lever
  - Right arrow to move right lever
  - Down arrow to activate the dock
+ - R to restart game
 
 Debug Mode:
 

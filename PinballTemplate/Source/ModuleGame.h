@@ -52,7 +52,7 @@ public:
 	int lives;
 	bool offCollision;
 
-	//uint32 bonus_fx;
+	uint32 bonus_fx;
 
 	vec2<int> ray;
 	bool ray_on;

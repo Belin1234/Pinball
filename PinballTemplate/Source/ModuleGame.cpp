@@ -1211,8 +1211,24 @@ bool ModuleGame::Start()
 	rightDiglettT = LoadTexture("Assets/RightDiglett.png");
 	upperRight = LoadTexture("Assets/UpperRightCollision.png");
 
-	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
-
+	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
+	if (App != nullptr && App->audio != nullptr) {
+		bonus_fx = App->audio->LoadFx("path_to_sound_file.wav");
+		if (bonus_fx != 0) {
+			if (!App->audio->PlayFx(bonus_fx)) {
+				// Manejar el error: la reproducción del sonido falló
+				printf("Error: No se pudo reproducir el sonido.");
+			}
+		}
+		else {
+			// Manejar el error: el sonido no se cargó correctamente
+			printf("Error: El sonido no se cargó correctamente.");
+		}
+	}
+	else {
+		// Manejar el error: App o App->audio no están inicializados
+		printf("Error: App o App->audio no están inicializados.");
+	}
 
 	// Sensor rectangular que me ralla
 	/*sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);*/
@@ -1387,28 +1403,28 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == VOLTORB)) {
 		bodyB->hit = true;
 		App->renderer->score += 500;
-
+		App->audio->PlayFx(bonus_fx);
 	}
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == TRIANGLE)) {
 		bodyB->hit = true;
 		App->renderer->score += 500;
-
+		App->audio->PlayFx(bonus_fx);
 	}
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == DIGLETT)) {
 		if (bodyB->shouldAddScore) {  // Verifica si se deben sumar puntos
 			bodyB->hit = true;
 			App->renderer->score += 500;
+			App->audio->PlayFx(bonus_fx);
 			if (bodyB->bonus) {
 				App->renderer->score += 10000;
 				bodyB->bonus = false;
 			}
 		}
-
+		
 	}
 	
 
 
-	/*App->audio->PlayFx(bonus_fx);*/
 }

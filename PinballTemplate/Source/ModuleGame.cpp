@@ -1604,8 +1604,6 @@ update_status ModuleGame::Update()
 
 
 	if (lives == 0 && IsKeyDown(KEY_R)) {
-		lives = 3;
-		App->renderer->lives = lives;
 		
 		if (score > highScore) {
 			highScore = score;
@@ -1773,10 +1771,12 @@ update_status ModuleGame::Update()
 				inside = false;
 				
 
-				if (lives > 0) {
+				if (lives >= 1) {
+					
 					lives -= 1;
 					entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
 					App->renderer->lives = lives;
+					
 				}
 				else if (lives == 0){
 

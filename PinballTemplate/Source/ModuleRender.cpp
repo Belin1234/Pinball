@@ -7,8 +7,8 @@
 ModuleRender::ModuleRender(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
     background = BLACK;
-    score = 0; // controlar el valor desde update de game desde score de game, hay que arreglarlo
-    lives = 3; // igual con lives
+    score = 0; 
+    lives = 3; 
     camera.x = camera.y = 0;
     camera.width = SCREEN_WIDTH;
     camera.height = SCREEN_HEIGHT;

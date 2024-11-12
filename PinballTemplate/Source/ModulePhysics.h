@@ -34,7 +34,7 @@ enum CollisionType
 class PhysBody
 {
 public:
-	PhysBody() : listener(NULL), body(NULL)
+	PhysBody() : listener(NULL), body(NULL), hit(false), shouldAddScore(false), bonus(false), height(0), width(0), rotation(0)
 	{}
 
 	

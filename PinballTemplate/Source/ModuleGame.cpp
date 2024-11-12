@@ -426,7 +426,6 @@ private:
 	float hitTimer;
 	float timer;
 	int  frameIndex;
-	bool toggle;
 	bool hitOn;	
 	int frameCounter;
 	int frameTotal;
@@ -1026,7 +1025,6 @@ private:
 	float timer;
 	float hitTimer;
 	int ditrio;
-	bool bonus;
 	bool toggle;
 	bool hitOn;
 
@@ -1142,7 +1140,6 @@ private:
 	float timer;
 	float hitTimer;
 	int ditrio;
-	bool bonus;
 	bool toggle;
 	bool hitOn;
 
@@ -1356,8 +1353,6 @@ private:
 	Texture2D texture;
 	float timer;
 	float hitTimer;
-	int ditrio;
-	bool bonus;
 	bool toggle;
 	bool hitOn;
 	int currentFrame;
@@ -1475,8 +1470,21 @@ private:
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	
 	ray_on = false;
 	sensed = false;
+	bonus_fx = NULL;
+
+	highScore = 0;
+	score = 0;
+	lives = App->renderer->lives;
+	offCollision = false;
+	left = true;
+	timer = 0.0f;
+	hitPika = false;
+	inside = false;
+	inMouth = false;
+	power = false;
 }
 
 ModuleGame::~ModuleGame()
@@ -1572,17 +1580,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LittlePoints(App->physics, 82, 67, this));
 	entities.emplace_back(new LittlePoints(App->physics, 60, 78, this));
 
-	
-	highScore = 0;
-	score = 0;
-	lives = 3;
-	offCollision = false;
-	left = true;
-	timer = 0.0f;
-	hitPika = false;
-	inside = false;
-	inMouth = false;
-	power = false;
+
 	
 	
 	return ret;

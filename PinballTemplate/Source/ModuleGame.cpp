@@ -1419,6 +1419,22 @@ private:
 
 };
 
+class LittlePoints : public PhysicEntity
+{
+public:
+	LittlePoints(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateRectangleSensor(_x, _y, 15, 15), _listener)
+		
+	{
+		body->collisionType = LITTLES;
+
+	}
+
+	void Update() override {}
+
+};
+
+
 
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
@@ -1499,6 +1515,10 @@ bool ModuleGame::Start()
 	entities.emplace_back(new RightDiglett(App->physics, 136, 192, this, rightDiglettT));
 
 	entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));
+
+
+	// FALTA CUBRIR LOS CUADRADITOS CON ESTO
+	entities.emplace_back(new LittlePoints(App->physics, 39, 93, this));
 
 	/*entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));*/
 
@@ -1644,23 +1664,23 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == VOLTORB)) {
 		bodyB->hit = true;
-		App->renderer->score += 500;
+		App->renderer->score += 300;
 		App->audio->PlayFx(bonus_fx);
 	}
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == TRIANGLE)) {
 		bodyB->hit = true;
-		App->renderer->score += 500;
+		App->renderer->score += 200;
 		App->audio->PlayFx(bonus_fx);
 	}
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == DIGLETT)) {
 		if (bodyB->shouldAddScore) {  // Verifica si se deben sumar puntos
 			bodyB->hit = true;
-			App->renderer->score += 500;
+			App->renderer->score += 1000;
 			App->audio->PlayFx(bonus_fx);
 			if (bodyB->bonus) {
-				App->renderer->score += 10000;
+				App->renderer->score += 6000;
 				bodyB->bonus = false;
 			}
 		}
@@ -1669,16 +1689,21 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PALET)) {
 		bodyB->hit = true;
-		App->renderer->score += 500;
+		App->renderer->score += 400;
 
 	}
 	
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PIKACHU)) {
 		bodyB->hit = true;
-		App->renderer->score += 500;
+		App->renderer->score += 1500;
 
 	}
 	
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == LITTLES)) {
+		bodyB->hit = true;
+		App->renderer->score += 100;
+
+	}
 	
 
 

@@ -54,15 +54,18 @@ update_status ModuleRender::PostUpdate()
 
     /*DrawText(TextFormat("Score: %08i", score), 400, 10, GetFontDefault(), 1, YELLOW);*/ // Cuando tengamos la fuente se puede incorporar de momento, DrawTextEx
 
-    // Draw Score
-    DrawTextEx(GetFontDefault(), TextFormat("Score: %08i", score), Vector2 { 300, 1 }, 30, 4, YELLOW);
-
-    // Draw Lives
-    
-    DrawTextEx(GetFontDefault(), TextFormat("Lives: %i", lives), Vector2{ 140, 1 }, 30, 4, RED);
-
     EndDrawing();
 
+    if (lives == 0)
+    {
+        DrawTextEx(GetFontDefault(), TextFormat("GAME OVER PRESS R TO RESTART"), Vector2{ 100, 3 }, 22, 4, YELLOW);
+    }
+    else {
+        // Draw Score
+        DrawTextEx(GetFontDefault(), TextFormat("Score: %08i", score), Vector2{ 300, 1 }, 30, 4, YELLOW);
+        // Draw Lives
+        DrawTextEx(GetFontDefault(), TextFormat("Lives: %i", lives), Vector2{ 140, 1 }, 30, 4, RED);
+    }
     return UPDATE_CONTINUE;
 }
 

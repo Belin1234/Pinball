@@ -28,5 +28,6 @@ public:
 	Font MyFont;
 	int score;
 	int lives;
+	int highScore;
 
 };

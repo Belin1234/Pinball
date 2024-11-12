@@ -1605,11 +1605,14 @@ update_status ModuleGame::Update()
 
 	if (lives == 0 && IsKeyDown(KEY_R)) {
 		lives = 3;
+		App->renderer->lives = lives;
+		
 		if (score > highScore) {
 			highScore = score;
+			App->renderer->highScore = highScore;
 		}
 		score = 0;
-		
+		App->renderer->score = score;
 	}
 
 	if (IsKeyPressed(KEY_ONE)) {
@@ -1768,18 +1771,17 @@ update_status ModuleGame::Update()
 				delete entities[i];
 				entities[i] = nullptr;
 				inside = false;
+				
 
-				if (lives > 0)
-				{
-					entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
-					printf("ANTES: %i", lives);
+				if (lives > 0) {
 					lives -= 1;
+					entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
 					App->renderer->lives = lives;
-					printf("LUEGO: %i", lives);
 				}
-				else
-				{
-					lives = 0;
+				else if (lives == 0){
+
+					lives = 0; 
+					App->renderer->lives = lives;
 				}
 			}
 

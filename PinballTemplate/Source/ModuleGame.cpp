@@ -241,11 +241,11 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 
-		// Actualizar temporizador y alternar source cada 0,4 segundos
+		
 		timer += GetFrameTime();
 		if (timer >= 1.2f) {
-			timer = 0.0f; // Reiniciar el temporizador
-			toggle = !toggle;  // Alternar entre true y false
+			timer = 0.0f; 
+			toggle = !toggle;  
 		}
 
 		
@@ -363,54 +363,52 @@ public:
 		Vector2 origin = { 16.0f * SCALE / 2.0f, 16.0f * SCALE / 2.0f };
 		static float rotation = body->GetRotation() * RAD2DEG;
 
-		// Detecta colisión y empieza el temporizador solo si no está en colisión y no se ha ejecutado la animación
+		
 		if (body->hit && !hitOn) {
-			hitOn = true;  // Iniciamos la animación en la colisión
-			hitTimer = 0.0f;  // Reiniciamos el temporizador
-			frameCounter = 0;  // Reseteamos el contador de frames
+			hitOn = true;  
+			hitTimer = 0.0f; 
+			frameCounter = 0;  
 		}
 
-		// Si estamos en colisión, incrementamos la animación
+		
 		if (hitOn) {
-			hitTimer += GetFrameTime();  // Incrementa el temporizador de colisión
+			hitTimer += GetFrameTime(); 
 
-			if (hitTimer >= 0.2f) {  // Si ha pasado suficiente tiempo (0.2 segundos)
-				hitTimer = 0.0f;  // Reiniciamos el temporizador
+			if (hitTimer >= 0.2f) { 
+				hitTimer = 0.0f;  
 
-				// Avanzamos los frames hasta alcanzar 4 frames en total
+				
 				if (frameCounter < 4) {
-					frameIndex++;  // Avanzamos al siguiente frame
-					frameCounter++;  // Aumentamos el contador de frames
+					frameIndex++;  
+					frameCounter++;  
 					if (frameTotal < 16) {
 						frameTotal++;
 					}
 				}
 			}
 
-			// Cuando hemos llegado al cuarto frame, detenemos la animación y desactivamos la colisión
+			
 			if (frameCounter >= 4) {
-				body->hit = false;  // Desactivamos el estado de colisión
-				hitOn = false;  // Detenemos la animación
+				body->hit = false;  
+				hitOn = false; 
 			}
 
-			// Si el frameIndex supera el máximo de 5 (por la cantidad de frames en la animación), lo reseteamos a 0
+			
 			if (frameIndex > 5) {
 				frameIndex = 0;
 			}
 		}
 
-		// Configuramos la selección del cuadro de la textura basado en frameIndex
+		
 		source = { frameIndex * 16.0f, 32.0f, 16.0f, 16.0f };
-
-		// Dibujamos la textura en pantalla
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-		// TEXTURA RAYO: actualizamos el estado de bonus y controlamos frameTotal
+		
 		if (frameTotal == 16) {
 			body->bonus = true;
 		}
 
-		// Reinicia frameTotal cuando el bonus se desactiva y la bola ha salido de la colisión
+		
 		if (!body->bonus && frameTotal >= 17) {
 			frameTotal = 0;
 		}
@@ -565,14 +563,7 @@ private:
 class Left_Flipper : public PhysicEntity
 {
 public:
-	//static constexpr int left_flipper[12] = {
-	//51, 260,
-	//51, 254,
-	//56, 253,
-	//73, 266,
-	//73, 268,
-	//71, 269
-	//};
+
 
 	Left_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
@@ -587,10 +578,9 @@ public:
 		jointDef.motorSpeed = 0.0f;
 		jointDef.maxMotorTorque = 200.0f;
 		jointDef.enableLimit = true;
-		jointDef.lowerAngle = -25 * DEG2RAD;  // Limite inferior en radianes (-20 grados)
-		jointDef.upperAngle = 25 * DEG2RAD;   // Limite superior en radianes (20 grados)
+		jointDef.lowerAngle = -25 * DEG2RAD;  
+		jointDef.upperAngle = 25 * DEG2RAD;   
 
-		// Crear la unión en el mundo de Box2D
 		leftJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
 
 	}
@@ -607,10 +597,10 @@ public:
 
 		if (IsKeyDown(KEY_LEFT))
 		{
-			leftJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
+			leftJoint->SetMotorSpeed(-10.0f); 
 		}
 		else {
-			leftJoint->SetMotorSpeed(5.0f); // Detener
+			leftJoint->SetMotorSpeed(5.0f); 
 		}
 
 
@@ -627,21 +617,13 @@ private:
 class Right_Flipper : public PhysicEntity
 {
 public:
-	//static constexpr int right_flipper[12] = {
-	//87, 265,
-	//103, 253,	
-	//109, 254,
-	//109, 260,
-	//89, 269,
-	//87, 268,
-	//};
+
 
 	Right_Flipper(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateRectangle(_x, _y, 30, 12), _listener)
 		, texture(_texture)
 	{
 		Box2 = physics->CreateRectangle2(315, 810, 5, 5);
-
 
 		b2RevoluteJointDef jointDef;
 		jointDef.Initialize(Box2->body, body->body, b2Vec2(PIXEL_TO_METERS(315), PIXEL_TO_METERS(810)));
@@ -652,7 +634,7 @@ public:
 		jointDef.lowerAngle = -25 * DEG2RAD;
 		jointDef.upperAngle = 25 * DEG2RAD;
 
-		// Crear la unión en el mundo de Box2D
+		
 		rightJoint = (b2RevoluteJoint*)body->body->GetWorld()->CreateJoint(&jointDef);
 	}
 
@@ -693,10 +675,10 @@ public:
 		: PhysicEntity(springPiston = physics->CreateRectangle(_x, _y - 3, _w, _h), _listener)
 	{
 
-		// Crear base del muelle
+		
 		springBase = physics->CreateRectangle2(_x, _y, _w, _h);
 
-		// Definir el prismatic joint
+		
 		b2PrismaticJointDef prismaticJointConfig;
 		prismaticJointConfig.bodyA = springBase->body;
 		prismaticJointConfig.bodyB = springPiston->body;
@@ -704,20 +686,20 @@ public:
 		prismaticJointConfig.localAnchorA.Set(0, 0);
 		prismaticJointConfig.localAnchorB.Set(0, -PIXEL_TO_METERS(_h * 0.05) / 2);
 
-		// Configurar el eje de movimiento en el eje Y
+		
 		prismaticJointConfig.localAxisA.Set(0, 1);
 
-		// Límites de movimiento
+		
 		prismaticJointConfig.enableLimit = true;
-		prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite abajo
-		prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(200 * 0.3f);// Límite arriba
+		prismaticJointConfig.lowerTranslation = -PIXEL_TO_METERS(200 * 0.3f);
+		prismaticJointConfig.upperTranslation = -PIXEL_TO_METERS(200 * 0.3f);
 
-		// Configurar fuerza del muelle
+		
 		prismaticJointConfig.enableMotor = true;
-		prismaticJointConfig.maxMotorForce = 10000.0f; //Fuerza del muelle
-		prismaticJointConfig.motorSpeed = 0.0f; //Velocidad inicial del muelle
+		prismaticJointConfig.maxMotorForce = 10000.0f; 
+		prismaticJointConfig.motorSpeed = 0.0f; 
 
-		// Crear el prismatic joint
+		
 		springJoint = (b2PrismaticJoint*)physics->world->CreateJoint(&prismaticJointConfig);
 	}
 
@@ -725,18 +707,17 @@ public:
 	{
 		if (IsKeyDown(KEY_DOWN))
 		{
-			// Cargas el muelle con la 'S'
+			
 			springJoint->SetMotorSpeed(10000.0f);
 			springJoint->SetMaxMotorForce(10000.0f);
 		}
 		else if (IsKeyReleased(KEY_DOWN))
 		{
-			// Se activa el rebote cuando sueltas la 'S'
-			springJoint->SetMotorSpeed(-10000.0f); // Velocidad de rebote hacia arriba
+			
+			springJoint->SetMotorSpeed(-10000.0f);
 		}
 		else
 		{
-			// Desactivas el muelle si no aprietas la 'S'
 			springJoint->SetMotorSpeed(0.0f);
 		}
 
@@ -773,22 +754,21 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 		
-		// Detecta colisión y empieza el temporizador
+		
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
 		if (hitOn) {
 			hitTimer += GetFrameTime();
-			if (hitTimer >= 0.3f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 0.3f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false;
 			}
 		}
 
-		// Dibuja la textura según el estado
+		
 		if (hitOn) {
 			source = { 16.0f, 16.0f, 16.0f, (float)texture.height };
 			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
@@ -838,22 +818,21 @@ public:
 		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
 		float rotation = body->GetRotation() * RAD2DEG;
 
-		// Detecta colisión y empieza el temporizador
+		
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
+		
 		if (hitOn) {
 			hitTimer += GetFrameTime();
-			if (hitTimer >= 0.3f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 0.3f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false; 
 			}
 		}
 
-		// Dibuja la textura según el estado
 		if (hitOn) {
 			source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
@@ -903,22 +882,22 @@ public:
 		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
 		float rotation = body->GetRotation() * RAD2DEG;
 
-		// Detecta colisión y empieza el temporizador
+	
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
+		
 		if (hitOn) {
 			hitTimer += GetFrameTime();
-			if (hitTimer >= 0.3f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 0.3f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false; 
 			}
 		}
 
-		// Dibuja la textura según el estado
+		
 		if (hitOn) {
 			source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
 			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
@@ -963,17 +942,17 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 
-		// Actualizar temporizador y alternar source cada 0,4 segundos
+		
 		timer += GetFrameTime();
 		if (timer >= 0.8f) {
-			timer = 0.0f; // Reiniciar el temporizador
-			toggle = !toggle;  // Alternar entre true y false
+			timer = 0.0f; 
+			toggle = !toggle;  
 			
 		}
 
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 			if (ditrio < 3) {
 				ditrio += 1;
 			}
@@ -983,15 +962,14 @@ public:
 			body->shouldAddScore = false;
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
 		if (hitOn) {
 			
 			hitTimer += GetFrameTime();
 			if (hitTimer < 3.0f) body->shouldAddScore = false;
 
-			if (hitTimer >= 3.0f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 3.0f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false; 
 				body->shouldAddScore = true;
 				if (ditrio == 3) ditrio = 0;
 			}
@@ -1081,17 +1059,17 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 
-		// Actualizar temporizador y alternar source cada 0,4 segundos
+		
 		timer += GetFrameTime();
 		if (timer >= 0.8f) {
-			timer = 0.0f; // Reiniciar el temporizador
-			toggle = !toggle;  // Alternar entre true y false
+			timer = 0.0f; 
+			toggle = !toggle;  
 
 		}
 
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 			if (ditrio < 3) {
 				ditrio += 1;
 			}
@@ -1101,15 +1079,14 @@ public:
 			body->shouldAddScore = false;
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
 		if (hitOn) {
 
 			hitTimer += GetFrameTime();
 			if (hitTimer < 3.0f) body->shouldAddScore = false;
 
-			if (hitTimer >= 3.0f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 3.0f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false; 
 				body->shouldAddScore = true;
 				if (ditrio == 3) ditrio = 0;
 			}
@@ -1205,27 +1182,26 @@ public:
 		Vector2 origin = { 16.0f * SCALE / 2.0f, 16.0f * SCALE / 2.0f };
 		static float rotation = body->GetRotation() * RAD2DEG;
 
-		// Actualizar temporizador y alternar source cada 0,4 segundos
 		timer += GetFrameTime();
 		if (timer >= 1.0f) {
-			timer = 0.0f; // Reiniciar el temporizador
-			toggle = !toggle;  // Alternar entre true y false
+			timer = 0.0f; 
+			toggle = !toggle;  
 
 		}
 
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
+	
 		if (hitOn) {
 
 			hitTimer += GetFrameTime();
 
-			if (hitTimer >= 1.5f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 1.5f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false; 
 
 			}
 		}
@@ -1320,21 +1296,20 @@ public:
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
 
-		// Actualizar temporizador y alternar source cada 0,4 segundos
+		
 		timer += GetFrameTime();
 		if (timer >= 0.8f) {
-			timer = 0.0f; // Reiniciar el temporizador
-			toggle = !toggle;  // Alternar entre true y false
+			timer = 0.0f; 
+			toggle = !toggle;  
 
 		}
 
 		if (body->hit && !hitOn) {
 			hitOn = true;
-			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			hitTimer = 0.0f; 
 			
 		}
 
-		// Incrementa el temporizador si está en estado "hit"
 		if (hitOn) {
 
 			hitTimer += GetFrameTime();
@@ -1342,17 +1317,17 @@ public:
 
 			if (hitFrameTimer >= 0.5f) {
 				hitFrameTimer = 0.0f;
-				currentFrame++; // Alterna entre 4 frames
+				currentFrame++; 
 			}
 
-			if (hitTimer >= 2.0f) { // Después de 0.3 segundos, vuelve a la textura normal
+			if (hitTimer >= 2.0f) { 
 				hitOn = false;
-				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->hit = false; 
 
 			}
 		}
 
-		// Diglett texture
+		
 		if (toggle && !hitOn) {
 			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
 			source = { 0.0f, 0.0f, 16.0f, 16.0f };
@@ -1498,9 +1473,6 @@ private:
 };
 
 
-
-
-
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	ray_on = false;
@@ -1552,8 +1524,6 @@ bool ModuleGame::Start()
 	musica = LoadMusicStream("Assets/music.ogg");
 	PlayMusicStream(musica);
 
-	// Sensor rectangular que me ralla
-	/*sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);*/
 
 	entities.emplace_back(new Perimeter(App->physics, 5, 30, this));
 	entities.emplace_back(new UpperCollision(App->physics, 5, 30, this));
@@ -1584,7 +1554,7 @@ bool ModuleGame::Start()
 
 	entities.emplace_back(new EntrySensor(App->physics, 9, 96, this));
 
-	// Littles
+	
 	entities.emplace_back(new LittlePoints(App->physics, 39, 93, this));
 	entities.emplace_back(new LittlePoints(App->physics, 40, 127, this));
 	entities.emplace_back(new LittlePoints(App->physics, 20, 117, this));
@@ -1601,7 +1571,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LittlePoints(App->physics, 82, 67, this));
 	entities.emplace_back(new LittlePoints(App->physics, 60, 78, this));
 
-	/*entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));*/
+	
 
 	score = 0;
 	lives = 3;
@@ -1617,7 +1587,6 @@ bool ModuleGame::Start()
 	return ret;
 }
 
-
 // Load assets
 bool ModuleGame::CleanUp()
 {
@@ -1629,7 +1598,7 @@ bool ModuleGame::CleanUp()
 // Update: draw background
 update_status ModuleGame::Update()
 {
-	UpdateMusicStream(musica);   // Se reproduce la música
+	UpdateMusicStream(musica);   
 
 	if (IsKeyPressed(KEY_ONE)) {
 
@@ -1639,11 +1608,10 @@ update_status ModuleGame::Update()
 
 	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
 
-	// TODO 4: Move all creation of bodies on 1,2,3 key press here in the scene
+	
 	if (IsKeyPressed(KEY_TWO))
 	{
 		entities.emplace_back(new Pokeball(App->physics, GetMouseX(), GetMouseY(), this, pokeball));
-
 
 	}
 
@@ -1691,57 +1659,24 @@ update_status ModuleGame::Update()
 		}
 	}
 
-	//for (auto entity : entities) {
-	//	// Intentar hacer cast a Bellsprout y UpperRightCollision
-	//	auto bellsprout = dynamic_cast<Bellsprout*>(entity);
-	//	auto upperRightCollision = dynamic_cast<UpperRightCollision*>(entity);
-	//	
-
-	//	if (bellsprout && upperRightCollision) {
-	//		// Verificar las condiciones para crear BellsproutMouth
-	//		if (bellsprout->body->hit && upperRightCollision->body->bonus) {
-	//			// Crear la entidad BellsproutMouth si aún no existe
-	//			if (!bellsproutMouth) {
-	//				bellsproutMouth = new BellsproutMouth(App->physics, 5, 30, this);
-	//				entities.push_back(bellsproutMouth);
-	//			}
-	//		}
-
-	//		// Verificar las condiciones para eliminar BellsproutMouth
-	//		if (bellsproutMouth && bellsproutMouth->body->hit) {
-	//			// Eliminar BellsproutMouth y reiniciar los estados de hit y bonus
-	//			auto it = std::find(entities.begin(), entities.end(), bellsproutMouth);
-	//			if (it != entities.end()) {
-	//				entities.erase(it);
-	//				delete bellsproutMouth;
-	//				bellsproutMouth = nullptr;
-	//			}
-	//			bellsprout->body->hit = false;
-	//			upperRightCollision->body->bonus = false;
-	//		}
-	//	}
-	//}
-
 
 	// Ditto movement
-	// Eliminar la entidad previa si existe
 	for (auto it = entities.begin(); it != entities.end(); ++it) {
-		// Si la entidad es de tipo DittoOpen o DittoClosed, se elimina
+		
 		if (dynamic_cast<DittoOpen*>(*it) || dynamic_cast<DittoClosed*>(*it)) {
-			// Asegúrate de que 'body' es un puntero al cuerpo de Box2D
+			
 			if ((*it)->body != nullptr) {
-				// Destruir el cuerpo físico asociado
-				App->physics->world->DestroyBody((*it)->body->body);  // 'body->body' es el cuerpo físico de Box2D
+				
+				App->physics->world->DestroyBody((*it)->body->body);
 			}
 
-			// Eliminar la entidad y sus recursos
-			delete* it;  // Eliminar la entidad
-			entities.erase(it);  // Eliminarla del vector
-			break;  // Salir del ciclo, ya que solo hay una instancia
+			
+			delete* it;  
+			entities.erase(it);  
+			break;  
 		}
 	}
 
-	// Agregar la nueva entidad según el estado de "inside"
 	if (!inside) {
 		entities.emplace_back(new DittoOpen(App->physics, 5, 30, this, ditto1));
 	}
@@ -1752,35 +1687,34 @@ update_status ModuleGame::Update()
 
 
 	// Pikachu movement
-    // Actualiza el temporizador
 	timer += GetFrameTime();
 
-	// Verifica si han pasado los 2 segundos
+	
 	if (timer >= 2.0f) {
-		// Reinicia el temporizador
+
 		timer = 0.0f;
 
-		// Busca y elimina la entidad Pikachu actual en entities
+		
 		for (auto it = entities.begin(); it != entities.end(); ++it) {
-			if (Pikachu* pikachuEntity = dynamic_cast<Pikachu*>(*it)) {  // Verifica si es un objeto Pikachu
-				// Elimina el cuerpo físico de Box2D
+			if (Pikachu* pikachuEntity = dynamic_cast<Pikachu*>(*it)) {  
+				
 				App->physics->world->DestroyBody(pikachuEntity->body->body);
 
-				// Libera la memoria de la entidad completa
+				
 				delete* it;
-				entities.erase(it);  // Elimina el puntero del vector
-				break;  // Sale del bucle tras encontrar y borrar el último Pikachu
+				entities.erase(it);  
+				break;  
 			}
 		}
 
-		// Alterna la posición de Pikachu y crea un nuevo objeto
+	
 		if (left) {
 			entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));
 		}
 		else {
 			entities.emplace_back(new Pikachu(App->physics, 397, 30, this, pikachu));
 		}
-		left = !left;  // Cambia el estado de la variable left
+		left = !left;  
 	}
 
 	if (inMouth && power) {
@@ -1789,13 +1723,13 @@ update_status ModuleGame::Update()
 		power = false;
 	}
 	for (auto it = entities.begin(); it != entities.end(); ++it) {
-		if (BellsproutMouth* bellsproutMouth = dynamic_cast<BellsproutMouth*>(*it)) {  // Verifica si es un objeto Pikachu
+		if (BellsproutMouth* bellsproutMouth = dynamic_cast<BellsproutMouth*>(*it)) {  
 			if (bellsproutMouth->body->hit) {
 				App->physics->world->DestroyBody(bellsproutMouth->body->body);
 
-				// Libera la memoria de la entidad completa
+				
 				delete* it;
-				entities.erase(it);  // Elimina el puntero del vector
+				entities.erase(it);  
 				break;  
 			}
 			
@@ -1805,42 +1739,42 @@ update_status ModuleGame::Update()
 
 
 	// Pokeball and offCollision behaviour
-for (int i = 0; i < entities.size(); ++i)
-{
-    int x, y;
-    entities[i]->body->GetPhysicPosition(x, y);
+	for (int i = 0; i < entities.size(); ++i)
+	{
+		int x, y;
+		entities[i]->body->GetPhysicPosition(x, y);
 
-    // Si la entidad es una Pokeball
-    if (entities[i]->body->collisionType == POKEBALL)
-    {
-        if (x < 450 && !offCollision) {
-            entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));
-            offCollision = true;
-        }
+		
+		if (entities[i]->body->collisionType == POKEBALL)
+		{
+			if (x < 450 && !offCollision) {
+				entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));
+				offCollision = true;
+			}
 
-        if (y > 900) {
-            // Eliminar la Pokeball
-            delete entities[i];
-            entities[i] = nullptr;
-            inside = false;
+			if (y > 900) {
+				
+				delete entities[i];
+				entities[i] = nullptr;
+				inside = false;
 
-            if (lives > 0)
-            {
-                entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
-                printf("ANTES: %i", lives);
-                lives -= 1;
-                App->renderer->lives = lives;
-                printf("LUEGO: %i", lives);
-            }
-            else
-            {
-                lives = 0;
-            }
-        }
+				if (lives > 0)
+				{
+					entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+					printf("ANTES: %i", lives);
+					lives -= 1;
+					App->renderer->lives = lives;
+					printf("LUEGO: %i", lives);
+				}
+				else
+				{
+					lives = 0;
+				}
+			}
 
-    }
+		}
 
-}
+	}
 
 	// Limpia los nullptr después del bucle
 	entities.erase(remove(entities.begin(), entities.end(), nullptr), entities.end());
@@ -1862,7 +1796,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	}
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == DIGLETT)) {
-		if (bodyB->shouldAddScore) {  // Verifica si se deben sumar puntos
+		if (bodyB->shouldAddScore) {  
 			bodyB->hit = true;
 			App->renderer->score += 1000;
 			App->audio->PlayFx(bonus_fx);
@@ -1877,6 +1811,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PALET)) {
 		bodyB->hit = true;
 		App->renderer->score += 400;
+		App->audio->PlayFx(bonus_fx);
 		if (bodyB->bonus) {
 			power = true;
 			if (!power) {
@@ -1888,6 +1823,7 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PIKACHU)) {
 		bodyB->hit = true;
+		App->audio->PlayFx(bonus_fx);
 		App->renderer->score += 1500;
 
 	}
@@ -1916,8 +1852,5 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 
 
 	}
-
-	
-
 
 }

@@ -37,14 +37,13 @@ public:
 	PhysBody() : listener(NULL), body(NULL)
 	{}
 
-	//void GetPosition(int& x, int& y) const;
+	
 	void GetPhysicPosition(int& x, int& y) const;
 	float GetRotation() const;
 	bool Contains(int x, int y) const;
 	int RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 	void SetRotation(float r);
-	/*void Rotate(float angle);*/
-	/*CollisionType GetCollisionType() const;*/
+	
 
 
 public:
@@ -62,7 +61,7 @@ public:
 };
 
 // Module --------------------------------------
-class ModulePhysics : public Module, public b2ContactListener // TODO
+class ModulePhysics : public Module, public b2ContactListener 
 {
 public:
 	ModulePhysics(Application* app, bool start_enabled = true);
@@ -79,28 +78,15 @@ public:
 	PhysBody* CreateRectangle2(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
 	PhysBody* CreateChain2(int x, int y, const int* points, int size);
-	/*PhysBody* CreateEdge(int x, int y, const int* points, int size);*/
-
-	//void Create2Flipper();
-	/*PhysBody* CreateSpring(int x, int y, int width, int height);*/
-	/*PhysBody* springPiston;*/
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
 
-	// b2ContactListener ---
 	void BeginContact(b2Contact* contact);
 
-	/*PhysBody* leftFlipper;
-	PhysBody* rightFlipper;
-	b2RevoluteJoint* lJoint;
-	b2RevoluteJoint* rJoint;*/
 
 	b2World* world;
 private:
 
 	bool debug;
-	//b2Body* springBase;
-	//b2PrismaticJoint* springJoint;
-	/*Texture2D leftFlipperTexture;
-	Texture2D rightFlipperTexture;*/
+
 
 };

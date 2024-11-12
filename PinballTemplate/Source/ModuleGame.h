@@ -11,12 +11,7 @@
 class PhysBody;
 class PhysicEntity;
 
-//enum CollisionType
-//{
-//	DEFAULT,
-//	POKEBALL,
-//	VOLTORB
-//};
+
 class ModuleGame : public Module
 {
 public:

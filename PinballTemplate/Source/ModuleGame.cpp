@@ -661,9 +661,9 @@ public:
 		float rotation = body->body->GetAngle() * RAD2DEG - 120 * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-		if (IsKeyDown(KEY_A))
+		if (IsKeyDown(KEY_LEFT))
 		{
-			leftJoint->SetMotorSpeed(-12.5f); // Rotar a la izquierda
+			leftJoint->SetMotorSpeed(-10.0f); // Rotar a la izquierda
 		}
 		else {
 			leftJoint->SetMotorSpeed(5.0f); // Detener
@@ -722,7 +722,7 @@ public:
 		float rotation = body->body->GetAngle() * RAD2DEG + 120 * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-		if (IsKeyDown(KEY_D))
+		if (IsKeyDown(KEY_RIGHT))
 		{
 			rightJoint->SetMotorSpeed(12.5f); // Rotar a la izquierda
 		}
@@ -779,13 +779,13 @@ public:
 
 	void Update() override
 	{
-		if (IsKeyDown(KEY_S))
+		if (IsKeyDown(KEY_DOWN))
 		{
 			// Cargas el muelle con la 'S'
 			springJoint->SetMotorSpeed(10000.0f);
 			springJoint->SetMaxMotorForce(10000.0f);
 		}
-		else if (IsKeyReleased(KEY_S))
+		else if (IsKeyReleased(KEY_DOWN))
 		{
 			// Se activa el rebote cuando sueltas la 'S'
 			springJoint->SetMotorSpeed(-10000.0f); // Velocidad de rebote hacia arriba

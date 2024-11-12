@@ -58,6 +58,9 @@ public:
 	float timer;
 	bool hitPika;
 	bool inside;
+	bool inMouth;
+	bool power;
+	
 
 	uint32 bonus_fx;
 	Music musica;

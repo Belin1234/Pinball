@@ -27,6 +27,8 @@ enum CollisionType
 	PALET,
 	LITTLES,
 	PIKACHU,
+	BELLSPROUT,
+	BELLSPROUT_MOUTH,
 	ENTRY
 };
 class PhysBody

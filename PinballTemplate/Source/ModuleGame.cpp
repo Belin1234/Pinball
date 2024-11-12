@@ -333,15 +333,6 @@ class UpperRightCollision : public PhysicEntity
 	113, 114,
 	110, 121
 	};
-
-	static constexpr int mouthCollision[12] = {
-	116, 87,
-	119, 82,
-	127, 82,
-	131, 87,
-	131, 93,
-	116, 93
-	};
 	
 
 public:
@@ -349,8 +340,7 @@ public:
 		: PhysicEntity(physics->CreateRectangleSensor(_x + 140, _y + 70, 42, 20), _listener)
 		, texture(_texture)
 	{
-		Box = physics->CreateChain2(_x, _y, upper_right_collision, 54);
-		mouth = physics->CreateChain(1000, 1000, mouthCollision, 12);
+		Box = physics->CreateChain(_x, _y, upper_right_collision, 54);
 		body->collisionType = PALET;
 		hitTimer = 0.0f;
 		timer = 0.0f;
@@ -358,7 +348,8 @@ public:
 		hitOn = false;
 		frameCounter = 0;
 		frameTotal = 0;
-		powerOn = false;
+		body->bonus = false;
+
 
 	}
 
@@ -393,7 +384,6 @@ public:
 					if (frameTotal < 16) {
 						frameTotal++;
 					}
-					
 				}
 			}
 
@@ -415,59 +405,20 @@ public:
 		// Dibujamos la textura en pantalla
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-		///////////////////////////////////////////////////////////////////////////// TEXTURA RAYO
+		// TEXTURA RAYO: actualizamos el estado de bonus y controlamos frameTotal
 		if (frameTotal == 16) {
-			powerOn = true;
+			body->bonus = true;
 		}
-		
-		if (frameTotal >= 17 && !powerOn) {
+
+		// Reinicia frameTotal cuando el bonus se desactiva y la bola ha salido de la colisión
+		if (!body->bonus && frameTotal >= 17) {
 			frameTotal = 0;
 		}
+
 		dest = { position.x - 70, position.y - 78, 24.0f * SCALE, 32.0f * SCALE };
 		source = { frameTotal * 24.0f, 0.0f, 24.0f, 32.0f };
 
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-
-		///////////////////////////////////////////////////////////////////////////////// TEXTURA BELLSPROUT
-
-
-		/*if (powerOn) {
-			mouth->ge
-		}*/
-
-		timer += GetFrameTime();
-		if (timer >= 1.0f) {
-			timer = 0.0f; // Reiniciar el temporizador
-			toggle = !toggle;  // Alternar entre true y false
-
-		}
-
-		if (toggle ) { // && !powerOn
-			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
-			source = { 0.0f, 48.0f, 27.0f, 35.0f };
-			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-		}
-		/*else if (powerOn && !expulsion) {
-			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
-			source = { 54.0f, 48.0f, 27.0f, 35.0f };
-			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-		}
-		else if (powerOn && expulsion) {
-			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
-			source = { 81.0f, 48.0f, 27.0f, 35.0f };
-			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-		}*/
-		else if (!toggle ) { // && !powerOn
-			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
-			source = { 27.0f, 48.0f, 27.0f, 35.0f };
-			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-		}
-
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
-		
-
-
-	
 	}
 
 private:
@@ -481,9 +432,7 @@ private:
 	bool hitOn;	
 	int frameCounter;
 	int frameTotal;
-	bool powerOn;
-	bool expulsion;
-	PhysBody* mouth;
+
 };
 
 class DownLeftCollision : public PhysicEntity
@@ -596,7 +545,7 @@ public:
 	void Update() override
 	{
 
-		// he pensado de hacer aqui lo de cuando se pase del limite que respawnee
+	
 		int x, y;
 		body->GetPhysicPosition(x, y);
 		Vector2 position{ (float)x, (float)y };
@@ -606,11 +555,6 @@ public:
 		float rotation = body->GetRotation() * RAD2DEG;
 		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
 
-		//if (y > 900) {
-		//	
-		//	delete body;
-		//	
-		//}
 	}
 
 private:
@@ -805,93 +749,6 @@ private:
 	b2PrismaticJoint* springJoint;
 
 };
-
-
-//class Box : public PhysicEntity
-//{
-//public:
-//	Box(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-//		: PhysicEntity(physics->CreateRectangle(_x, _y, 100, 50), _listener)
-//		, texture(_texture)
-//	{
-//
-//	}
-//
-//	void Update() override
-//	{
-//		int x, y;
-//		body->GetPhysicPosition(x, y);
-//		DrawTexturePro(texture, Rectangle{ 0, 0, (float)texture.width, (float)texture.height },
-//		Rectangle{ (float)x, (float)y, (float)texture.width, (float)texture.height },
-//		Vector2{ (float)texture.width / 2.0f, (float)texture.height / 2.0f }, body->GetRotation() * RAD2DEG, WHITE);
-//	}
-//
-//	int RayHit(vec2<int> ray, vec2<int> mouse, vec2<float>& normal) override
-//	{
-//		return body->RayCast(ray.x, ray.y, mouse.x, mouse.y, normal.x, normal.y);;
-//	}
-//
-//private:
-//	Texture2D texture;
-//
-//};
-
-//class Rick : public PhysicEntity
-//{
-//public:
-//	// Pivot 0, 0
-//	static constexpr int rick_head[64] = {
-//			14, 36,
-//			42, 40,
-//			40, 0,
-//			75, 30,
-//			88, 4,
-//			94, 39,
-//			111, 36,
-//			104, 58,
-//			107, 62,
-//			117, 67,
-//			109, 73,
-//			110, 85,
-//			106, 91,
-//			109, 99,
-//			103, 104,
-//			100, 115,
-//			106, 121,
-//			103, 125,
-//			98, 126,
-//			95, 137,
-//			83, 147,
-//			67, 147,
-//			53, 140,
-//			46, 132,
-//			34, 136,
-//			38, 126,
-//			23, 123,
-//			30, 114,
-//			10, 102,
-//			29, 90,
-//			0, 75,
-//			30, 62
-//	};
-//
-//	Rick(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
-//		: PhysicEntity(physics->CreateChain(GetMouseX() - 50, GetMouseY() - 100, rick_head, 64), _listener)
-//		, texture(_texture)
-//	{
-//
-//	}
-//
-//	void Update() override
-//	{
-//		int x, y;
-//		body->GetPhysicPosition(x, y);
-//		DrawTextureEx(texture, Vector2{ (float)x, (float)y }, body->GetRotation() * RAD2DEG, 1.0f, WHITE);
-//	}
-//
-//private:
-//	Texture2D texture;
-//};
 
 class Voltorb : public PhysicEntity
 {
@@ -1314,6 +1171,120 @@ private:
 
 };
 
+class Bellsprout : public PhysicEntity
+{
+
+	static constexpr int mouthCollision[8] = {
+	117, 87,
+	120, 83,
+	127, 83,
+	130, 87
+	};
+
+public:
+	Bellsprout(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangleSensor(_x, _y, 40, 10), _listener)
+		, texture(_texture)
+	{
+		body->collisionType = BELLSPROUT;
+		timer = 0.0f;
+		toggle = false;
+		hitOn = false;
+		hitTimer = 0.0f;
+		body->bonus = false;
+		
+	}
+
+	void Update() override {
+
+		int x = 435;
+		int y = 300;
+		Rectangle source;
+		Vector2 position{ (float)x, (float)y };
+		Rectangle dest = { position.x, position.y, 16.0f * SCALE - 3 , 16.0f * SCALE };
+		Vector2 origin = { 16.0f * SCALE / 2.0f, 16.0f * SCALE / 2.0f };
+		static float rotation = body->GetRotation() * RAD2DEG;
+
+		// Actualizar temporizador y alternar source cada 0,4 segundos
+		timer += GetFrameTime();
+		if (timer >= 1.0f) {
+			timer = 0.0f; // Reiniciar el temporizador
+			toggle = !toggle;  // Alternar entre true y false
+
+		}
+
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+
+			hitTimer += GetFrameTime();
+
+			if (hitTimer >= 1.5f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+
+			}
+		}
+
+		if (toggle && !body->bonus) { 
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 0.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (body->bonus) {
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 54.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (!toggle && !body->bonus) { 
+			dest = { position.x - 94, position.y - 4, 27.0f * SCALE, 35.0f * SCALE };
+			source = { 27.0f, 48.0f, 27.0f, 35.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+
+	}
+
+private:
+
+	Texture2D texture;
+	float timer;
+	float hitTimer;
+	bool toggle;
+	bool hitOn;
+
+};
+
+class BellsproutMouth : public PhysicEntity
+{
+
+	static constexpr int mouthCollision[8] = {
+	117, 87,
+	120, 83,
+	127, 83,
+	130, 87
+	};
+
+public:
+	BellsproutMouth(ModulePhysics* physics, int _x, int _y, Module* _listener)
+		: PhysicEntity(physics->CreateChain2(_x, _y, mouthCollision, 8), _listener)
+	{
+		body->collisionType = BELLSPROUT_MOUTH;
+		body->hit = false;
+
+	}
+
+	void Update() override {}
+
+};
+
+
 class Pikachu : public PhysicEntity
 {
 
@@ -1591,6 +1562,8 @@ bool ModuleGame::Start()
 	entities.emplace_back(new StaryuCollision(App->physics, 5, 30, this, staryu));
 	entities.emplace_back(new UpperLeftCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new UpperRightCollision(App->physics, 5, 30, this, upperRight));
+	entities.emplace_back(new Bellsprout(App->physics, 125, 97, this, upperRight));
+	
 	entities.emplace_back(new DownLeftCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
 
@@ -1611,7 +1584,7 @@ bool ModuleGame::Start()
 
 	entities.emplace_back(new EntrySensor(App->physics, 9, 96, this));
 
-	// FALTA CUBRIR LOS CUADRADITOS CON ESTO
+	// Littles
 	entities.emplace_back(new LittlePoints(App->physics, 39, 93, this));
 	entities.emplace_back(new LittlePoints(App->physics, 40, 127, this));
 	entities.emplace_back(new LittlePoints(App->physics, 20, 117, this));
@@ -1628,8 +1601,6 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LittlePoints(App->physics, 82, 67, this));
 	entities.emplace_back(new LittlePoints(App->physics, 60, 78, this));
 
-
-
 	/*entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));*/
 
 	score = 0;
@@ -1639,6 +1610,10 @@ bool ModuleGame::Start()
 	timer = 0.0f;
 	hitPika = false;
 	inside = false;
+	inMouth = false;
+	power = false;
+	
+	
 	return ret;
 }
 
@@ -1671,6 +1646,8 @@ update_status ModuleGame::Update()
 
 
 	}
+
+
 
 	// Prepare for raycast ------------------------------------------------------
 
@@ -1713,6 +1690,38 @@ update_status ModuleGame::Update()
 			DrawLine((int)(ray.x + destination.x), (int)(ray.y + destination.y), (int)(ray.x + destination.x + normal.x * 25.0f), (int)(ray.y + destination.y + normal.y * 25.0f), Color{ 100, 255, 100, 255 });
 		}
 	}
+
+	//for (auto entity : entities) {
+	//	// Intentar hacer cast a Bellsprout y UpperRightCollision
+	//	auto bellsprout = dynamic_cast<Bellsprout*>(entity);
+	//	auto upperRightCollision = dynamic_cast<UpperRightCollision*>(entity);
+	//	
+
+	//	if (bellsprout && upperRightCollision) {
+	//		// Verificar las condiciones para crear BellsproutMouth
+	//		if (bellsprout->body->hit && upperRightCollision->body->bonus) {
+	//			// Crear la entidad BellsproutMouth si aún no existe
+	//			if (!bellsproutMouth) {
+	//				bellsproutMouth = new BellsproutMouth(App->physics, 5, 30, this);
+	//				entities.push_back(bellsproutMouth);
+	//			}
+	//		}
+
+	//		// Verificar las condiciones para eliminar BellsproutMouth
+	//		if (bellsproutMouth && bellsproutMouth->body->hit) {
+	//			// Eliminar BellsproutMouth y reiniciar los estados de hit y bonus
+	//			auto it = std::find(entities.begin(), entities.end(), bellsproutMouth);
+	//			if (it != entities.end()) {
+	//				entities.erase(it);
+	//				delete bellsproutMouth;
+	//				bellsproutMouth = nullptr;
+	//			}
+	//			bellsprout->body->hit = false;
+	//			upperRightCollision->body->bonus = false;
+	//		}
+	//	}
+	//}
+
 
 	// Ditto movement
 	// Eliminar la entidad previa si existe
@@ -1774,43 +1783,64 @@ update_status ModuleGame::Update()
 		left = !left;  // Cambia el estado de la variable left
 	}
 
+	if (inMouth && power) {
+		entities.emplace_back(new BellsproutMouth(App->physics, 5, 30, this));
+		inMouth = false;
+		power = false;
+	}
+	for (auto it = entities.begin(); it != entities.end(); ++it) {
+		if (BellsproutMouth* bellsproutMouth = dynamic_cast<BellsproutMouth*>(*it)) {  // Verifica si es un objeto Pikachu
+			if (bellsproutMouth->body->hit) {
+				App->physics->world->DestroyBody(bellsproutMouth->body->body);
 
-	// Pokeball and offCollision behaviour
-	for (int i = 0; i < entities.size(); ++i)
-	{
-		int x, y;
-		entities[i]->body->GetPhysicPosition(x, y);
-
-		if (entities[i]->body->collisionType == POKEBALL)
-		{
-			if (x < 450 && !offCollision) {
-				entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));
-				offCollision = true;
-			
-			}
-			if (y > 900) {
-
-				// Sustituye por nullptr en lugar de eliminar y borrar inmediatamente
-				delete entities[i];
-				entities[i] = nullptr;
-				inside = false;
-
-				if (lives > 0)
-				{
-					entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
-					printf("ANTES: %i", lives);
-					lives -= 1;
-					App->renderer->lives = lives;
-					printf("LUEGO: %i", lives);
-				}
-				else
-				{
-					lives = 0;
-				}
+				// Libera la memoria de la entidad completa
+				delete* it;
+				entities.erase(it);  // Elimina el puntero del vector
+				break;  
 			}
 			
 		}
 	}
+	
+
+
+	// Pokeball and offCollision behaviour
+for (int i = 0; i < entities.size(); ++i)
+{
+    int x, y;
+    entities[i]->body->GetPhysicPosition(x, y);
+
+    // Si la entidad es una Pokeball
+    if (entities[i]->body->collisionType == POKEBALL)
+    {
+        if (x < 450 && !offCollision) {
+            entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));
+            offCollision = true;
+        }
+
+        if (y > 900) {
+            // Eliminar la Pokeball
+            delete entities[i];
+            entities[i] = nullptr;
+            inside = false;
+
+            if (lives > 0)
+            {
+                entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+                printf("ANTES: %i", lives);
+                lives -= 1;
+                App->renderer->lives = lives;
+                printf("LUEGO: %i", lives);
+            }
+            else
+            {
+                lives = 0;
+            }
+        }
+
+    }
+
+}
 
 	// Limpia los nullptr después del bucle
 	entities.erase(remove(entities.begin(), entities.end(), nullptr), entities.end());
@@ -1847,7 +1877,13 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PALET)) {
 		bodyB->hit = true;
 		App->renderer->score += 400;
-
+		if (bodyB->bonus) {
+			power = true;
+			if (!power) {
+				bodyB->bonus = false;
+			}
+			
+		}
 	}
 	
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PIKACHU)) {
@@ -1865,6 +1901,19 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == ENTRY)) {
 		inside = true;
 	
+
+	}
+
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == BELLSPROUT)) {
+		bodyB->hit = true;
+		inMouth = bodyB->hit;
+
+	}
+	
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == BELLSPROUT_MOUTH)) {
+		bodyB->hit = true;
+		
+
 
 	}
 

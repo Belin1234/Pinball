@@ -38,7 +38,6 @@ class Perimeter : public PhysicEntity
 	static constexpr int perimeter[134] = {
 
 		192, 0,
-
 		192, 280,
 		105, 280,
 		105, 278,
@@ -128,11 +127,11 @@ class UpperCollision : public PhysicEntity
 		75, 23,
 		89, 23,
 		105, 29,
-		117, 39,
-		105, 34,
+		117, 38,
+		105, 33,
 		94, 30,
 		79, 29,
-		64, 31,
+		64, 30,
 		52, 35
 
 
@@ -223,13 +222,52 @@ class StaryuCollision : public PhysicEntity
 
 
 public:
-	StaryuCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+	StaryuCollision(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateChain(_x, _y, staryu_collision, 32), _listener)
+		, texture(_texture)
 	{
+		timer = 0.0f;
+		toggle = false;
 
 	}
 
-	void Update() override {}
+	void Update() override {
+
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Rectangle source;
+		Vector2 position{ (float)x + 199, (float)y + 349 };
+		Rectangle dest;
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		// Actualizar temporizador y alternar source cada 0,4 segundos
+		timer += GetFrameTime();
+		if (timer >= 1.2f) {
+			timer = 0.0f; // Reiniciar el temporizador
+			toggle = !toggle;  // Alternar entre true y false
+		}
+
+		
+		if (toggle) {
+			dest = { position.x, position.y, (float)texture.width * SCALE / 2, (float)texture.height * SCALE };
+			source = { 0.0f, 0.0f, 21.0f, (float)texture.height - 1 };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else {
+			dest = { position.x, position.y - 3, (float)texture.width * SCALE / 2, (float)texture.height * SCALE };
+			source = { 21.0f, 0.0f, 21.0f, (float)texture.height - 1 };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		
+
+	}
+
+private:
+
+	Texture2D texture;
+	float timer;
+	bool toggle;
 
 };
 
@@ -299,13 +337,19 @@ class UpperRightCollision : public PhysicEntity
 
 
 public:
-	UpperRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener)
+	UpperRightCollision(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
 		: PhysicEntity(physics->CreateChain(_x, _y, upper_right_collision, 54), _listener)
+		, texture(_texture)
 	{
 
 	}
 
 	void Update() override {}
+
+
+private:
+
+	Texture2D texture;
 
 };
 
@@ -359,6 +403,50 @@ public:
 	}
 
 	void Update() override {}
+
+};
+
+class OffCollision : public PhysicEntity
+{
+	static constexpr int offCollsion[22] = {
+		96, 25,
+		110, 27,
+		124, 32,
+		134, 40,
+		144, 54,
+		148, 70,
+		149, 80,
+		144, 69,
+		135, 54,
+		121, 40,
+		107, 30
+	};
+
+public:
+	OffCollision(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain(_x, _y, offCollsion, 22), _listener)
+		, texture(_texture)
+	{
+
+	}
+
+	void Update() override {
+	
+		int x, y;
+		body->GetPhysicPosition(x, y);
+
+		Vector2 position{ (float)x + 370, (float)y + 155 };
+		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+	}
+
+private:
+
+	Texture2D texture;
 
 };
 
@@ -680,6 +768,8 @@ public:
 		, texture(_texture)
 	{
 		body->collisionType = VOLTORB;
+		hitOn = false;
+		hitTimer = 0.0f;
 	}
 
 	void Update() override
@@ -687,19 +777,410 @@ public:
 		int x, y;
 		body->GetPhysicPosition(x, y);
 
-		Vector2 position{ (float)x, (float)y };
-		Rectangle source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
-		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		Vector2 position{ (float)x + 24, (float)y };
+		Rectangle source;
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE / 2, (float)texture.height * SCALE};
 		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
 		float rotation = body->GetRotation() * RAD2DEG;
-		DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		
+		// Detecta colisión y empieza el temporizador
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+			hitTimer += GetFrameTime();
+			if (hitTimer >= 0.3f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+			}
+		}
+
+		// Dibuja la textura según el estado
+		if (hitOn) {
+			source = { 16.0f, 16.0f, 16.0f, (float)texture.height };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else {
+			source = { 0.0f, 0.0f, 16.0f, (float)texture.height };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
 
 	}
 
 private:
 	Texture2D texture;
+	bool hitOn;
+	float hitTimer;
 
 };
+
+class LeftTriangle : public PhysicEntity
+{
+public:
+
+	static constexpr int leftTriangle[6] = {
+	37, 227,
+	37, 209,
+	50, 235
+	};
+
+	LeftTriangle(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain2(_x, _y, leftTriangle, 6), _listener)
+		, texture(_texture)
+	{
+		body->collisionType = TRIANGLE;
+		hitOn = false;
+		hitTimer = 0.0f;
+	}
+
+	void Update() override
+	{
+		int x, y;
+		x = 44 * SCALE;
+		y = 233 * SCALE;
+		
+		Vector2 position{ (float)x, (float)y };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		Rectangle source;
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		// Detecta colisión y empieza el temporizador
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+			hitTimer += GetFrameTime();
+			if (hitTimer >= 0.3f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+			}
+		}
+
+		// Dibuja la textura según el estado
+		if (hitOn) {
+			source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else {
+			source = { 0.0f, 0.0f, 0.0f, 0.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+	}
+
+private:
+	Texture2D texture;
+	bool hitOn;
+	float hitTimer;
+
+};
+
+class RightTriangle : public PhysicEntity
+{
+public:
+
+	static constexpr int rightTriangle[6] = {
+	110, 235,
+	123, 208,
+	123, 226
+	};
+
+	RightTriangle(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain2(_x, _y, rightTriangle, 6), _listener)
+		, texture(_texture)
+	{
+		body->collisionType = TRIANGLE;
+		hitOn = false;
+		hitTimer = 0.0f;
+	}
+
+	void Update() override
+	{
+		int x, y;
+		x = 119 * SCALE;
+		y = 233 * SCALE;
+		
+		Vector2 position{ (float)x, (float)y };
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		Rectangle source;
+		Rectangle dest = { position.x, position.y, (float)texture.width * SCALE, (float)texture.height * SCALE };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		// Detecta colisión y empieza el temporizador
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+			hitTimer += GetFrameTime();
+			if (hitTimer >= 0.3f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+			}
+		}
+
+		// Dibuja la textura según el estado
+		if (hitOn) {
+			source = { 0.0f, 0.0f, (float)texture.width, (float)texture.height };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else {
+			source = { 0.0f, 0.0f, 0.0f, 0.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+	}
+
+private:
+	Texture2D texture;
+	bool hitOn;
+	float hitTimer;
+
+};
+
+class LeftDiglett : public PhysicEntity
+{
+public:
+	LeftDiglett(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangleSensor(_x, _y, 15, 35), _listener)
+		, texture(_texture)
+	{
+		body->collisionType = DIGLETT;
+		timer = 0.0f;
+		toggle = false;
+		hitOn = false;
+		hitTimer = 0.0f;
+		body->shouldAddScore = true;
+		ditrio = 0;
+		body->bonus = false;
+	}
+
+	void Update() override {
+
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Rectangle source;
+		Vector2 position{ (float)x + 137, (float)y + 48};
+		Rectangle dest;
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		// Actualizar temporizador y alternar source cada 0,4 segundos
+		timer += GetFrameTime();
+		if (timer >= 0.8f) {
+			timer = 0.0f; // Reiniciar el temporizador
+			toggle = !toggle;  // Alternar entre true y false
+			
+		}
+
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			if (ditrio < 3) {
+				ditrio += 1;
+			}
+			else {
+				ditrio = 0;
+			}
+			body->shouldAddScore = false;
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+			
+			hitTimer += GetFrameTime();
+			if (hitTimer < 3.0f) body->shouldAddScore = false;
+
+			if (hitTimer >= 3.0f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->shouldAddScore = true;
+				if (ditrio == 3) ditrio = 0;
+			}
+		}
+
+		// Diglett texture
+		if (toggle && !hitOn) {
+			dest = { position.x, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 0.0f, 32.0f, 16.0f, 16.0f};
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (hitOn) {
+			dest = { position.x, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 32.0f, 32.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (!toggle && !hitOn){
+			dest = { position.x, position.y, 16.0f * SCALE, 16.0f * SCALE};
+			source = { 16.0f, 32.0f, 16.0f, 16.0f};
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+
+		// Ditrio texture
+		if (ditrio == 0) {
+			dest = { position.x - 72, position.y-24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 0.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (ditrio == 1) {
+			dest = { position.x - 72, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 24.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (ditrio == 2) {
+			body->bonus = true;
+			dest = { position.x - 72, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 48.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (ditrio == 3) {
+
+			dest = { position.x - 72, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 72.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+
+	}
+
+private:
+
+	Texture2D texture;
+	float timer;
+	float hitTimer;
+	int ditrio;
+	bool bonus;
+	bool toggle;
+	bool hitOn;
+
+};
+
+class RightDiglett : public PhysicEntity
+{
+public:
+	RightDiglett(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateRectangleSensor(_x, _y, 15, 35), _listener)
+		, texture(_texture)
+	{
+		body->collisionType = DIGLETT;
+		timer = 0.0f;
+		toggle = false;
+		hitOn = false;
+		hitTimer = 0.0f;
+		body->shouldAddScore = true;
+		ditrio = 0;
+		body->bonus = false;
+	}
+
+	void Update() override {
+
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Rectangle source;
+		Vector2 position{ (float)x + 137, (float)y + 48 };
+		Rectangle dest;
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		// Actualizar temporizador y alternar source cada 0,4 segundos
+		timer += GetFrameTime();
+		if (timer >= 0.8f) {
+			timer = 0.0f; // Reiniciar el temporizador
+			toggle = !toggle;  // Alternar entre true y false
+
+		}
+
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			if (ditrio < 3) {
+				ditrio += 1;
+			}
+			else {
+				ditrio = 0;
+			}
+			body->shouldAddScore = false;
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+
+			hitTimer += GetFrameTime();
+			if (hitTimer < 3.0f) body->shouldAddScore = false;
+
+			if (hitTimer >= 3.0f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+				body->shouldAddScore = true;
+				if (ditrio == 3) ditrio = 0;
+			}
+		}
+
+		// Diglett texture
+		if (toggle && !hitOn) {
+			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 0.0f, 32.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (hitOn) {
+			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 32.0f, 32.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (!toggle && !hitOn) {
+			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 16.0f, 32.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+
+		// Ditrio texture
+		if (ditrio == 0) {
+			dest = { position.x + 12, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 0.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (ditrio == 1) {
+			dest = { position.x + 12, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 24.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (ditrio == 2) {
+			body->bonus = true;
+			dest = { position.x + 12, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 48.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (ditrio == 3) {
+
+			dest = { position.x + 12, position.y - 24, 24.0f * SCALE, 32.0f * SCALE };
+			source = { 72.0f, 0.0f, 24.0f, 32.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+	}
+
+private:
+
+	Texture2D texture;
+	float timer;
+	float hitTimer;
+	int ditrio;
+	bool bonus;
+	bool toggle;
+	bool hitOn;
+
+};
+
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -721,22 +1202,28 @@ bool ModuleGame::Start()
 	pokeball = LoadTexture("Assets/pokeball.png");
 	leftFlipperTexture = LoadTexture("Assets/leftFlipper.png");
 	rightFlipperTexture = LoadTexture("Assets/rightFlipper.png");
-	voltorb = LoadTexture("Assets/voltorb.png");
-	voltorbChocado = LoadTexture("Assets/voltorbChocado.png");
+	voltorb = LoadTexture("Assets/Voltorb.png");
+	leftTriangleOn = LoadTexture("Assets/LeftTriangleOn.png");
+	rightTriangleOn = LoadTexture("Assets/RightTriangleOn.png");
+	offCollisionT = LoadTexture("Assets/OffCollision.png");
+	staryu = LoadTexture("Assets/Staryu.png");
+	leftDiglettT = LoadTexture("Assets/LeftDiglett.png");
+	rightDiglettT = LoadTexture("Assets/RightDiglett.png");
+	upperRight = LoadTexture("Assets/UpperRightCollision.png");
 
 	/*bonus_fx = App->audio->LoadFx("Assets/bonus.wav");*/
 
 
 	// Sensor rectangular que me ralla
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
+	/*sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);*/
 
 	entities.emplace_back(new Perimeter(App->physics, 5, 30, this));
 	entities.emplace_back(new UpperCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new LeftLittleCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new RightLittleCollision(App->physics, 5, 30, this));
-	entities.emplace_back(new StaryuCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new StaryuCollision(App->physics, 5, 30, this, staryu));
 	entities.emplace_back(new UpperLeftCollision(App->physics, 5, 30, this));
-	entities.emplace_back(new UpperRightCollision(App->physics, 5, 30, this));
+	entities.emplace_back(new UpperRightCollision(App->physics, 5, 30, this, upperRight));
 	entities.emplace_back(new DownLeftCollision(App->physics, 5, 30, this));
 	entities.emplace_back(new DownRightCollision(App->physics, 5, 30, this));
 
@@ -749,8 +1236,17 @@ bool ModuleGame::Start()
 	entities.emplace_back(new Voltorb(App->physics, 210, 297, this, voltorb));
 	entities.emplace_back(new Voltorb(App->physics, 265, 350, this, voltorb));
 
+	entities.emplace_back(new LeftTriangle(App->physics, 5, 30, this, leftTriangleOn));
+	entities.emplace_back(new RightTriangle(App->physics, 5, 30, this, rightTriangleOn));
+
+	entities.emplace_back(new LeftDiglett(App->physics, 28, 192, this, leftDiglettT));
+	entities.emplace_back(new RightDiglett(App->physics, 136, 192, this, rightDiglettT));
+
+	/*entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));*/
+
 	score = 0;
 	lives = 3;
+	offCollision = false;
 
 	return ret;
 }
@@ -844,30 +1340,40 @@ update_status ModuleGame::Update()
 	//		printf("LUEGO: %i", lives);
 	//	}
 	//}
-
+	
+	
 	for (int i = 0; i < entities.size(); ++i)
 	{
 		int x, y;
 		entities[i]->body->GetPhysicPosition(x, y);
 
-		if (entities[i]->body->collisionType == POKEBALL && y > 850)
+		if (entities[i]->body->collisionType == POKEBALL)
 		{
-			// Sustituye por nullptr en lugar de eliminar y borrar inmediatamente
-			delete entities[i];
-			entities[i] = nullptr;
+			if (x < 450 && !offCollision) {
+				entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));
+				offCollision = true;
+			
+			}
+			if (y > 900) {
 
-			if (lives > 0)
-			{
-				entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
-				printf("ANTES: %i", lives);
-				lives -= 1;
-				App->renderer->lives = lives;
-				printf("LUEGO: %i", lives);
+				// Sustituye por nullptr en lugar de eliminar y borrar inmediatamente
+				delete entities[i];
+				entities[i] = nullptr;
+
+				if (lives > 0)
+				{
+					entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+					printf("ANTES: %i", lives);
+					lives -= 1;
+					App->renderer->lives = lives;
+					printf("LUEGO: %i", lives);
+				}
+				else
+				{
+					lives = 0;
+				}
 			}
-			else
-			{
-				lives = 0;
-			}
+			
 		}
 	}
 
@@ -876,21 +1382,32 @@ update_status ModuleGame::Update()
 
 	return UPDATE_CONTINUE;
 }
-void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
-{
-	bool hascollisionwithvoltorb = false;
-
+void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == VOLTORB)) {
-		hascollisionwithvoltorb = true;
+		bodyB->hit = true;
 		App->renderer->score += 500;
 
 	}
-	
-	if (hascollisionwithvoltorb) {
-		
+
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == TRIANGLE)) {
+		bodyB->hit = true;
+		App->renderer->score += 500;
 
 	}
+
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == DIGLETT)) {
+		if (bodyB->shouldAddScore) {  // Verifica si se deben sumar puntos
+			bodyB->hit = true;
+			App->renderer->score += 500;
+			if (bodyB->bonus) {
+				App->renderer->score += 10000;
+				bodyB->bonus = false;
+			}
+		}
+
+	}
+	
 
 
 	/*App->audio->PlayFx(bonus_fx);*/

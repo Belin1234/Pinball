@@ -21,7 +21,11 @@ enum CollisionType
 {
 	DEFAULT,
 	POKEBALL,
-	VOLTORB
+	VOLTORB,
+	TRIANGLE,
+	DIGLETT,
+	PALET,
+	LITTLES
 };
 class PhysBody
 {
@@ -42,6 +46,9 @@ public:
 public:
 
 	CollisionType collisionType;
+	bool hit;
+	bool shouldAddScore;
+	bool bonus;
 
 	int width, height;
 	float rotation;
@@ -67,6 +74,7 @@ public:
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
 	PhysBody* CreateRectangle2(int x, int y, int width, int height);
 	PhysBody* CreateChain(int x, int y, const int* points, int size);
+	PhysBody* CreateChain2(int x, int y, const int* points, int size);
 	/*PhysBody* CreateEdge(int x, int y, const int* points, int size);*/
 
 	//void Create2Flipper();

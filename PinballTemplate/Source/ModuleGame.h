@@ -40,9 +40,17 @@ public:
 	Texture2D rightFlipperTexture;
 	Texture2D voltorb;
 	Texture2D voltorbChocado;
+	Texture2D leftTriangleOn;
+	Texture2D rightTriangleOn;
+	Texture2D offCollisionT;
+	Texture2D staryu;
+	Texture2D leftDiglettT;
+	Texture2D rightDiglettT;
+	Texture2D upperRight;
 
 	int score;
 	int lives;
+	bool offCollision;
 
 	//uint32 bonus_fx;
 

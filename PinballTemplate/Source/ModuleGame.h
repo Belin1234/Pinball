@@ -48,6 +48,8 @@ public:
 	Texture2D rightDiglettT;
 	Texture2D upperRight;
 	Texture2D pikachu;
+	Texture2D ditto1;
+	Texture2D ditto2;
 
 	int score;
 	int lives;
@@ -55,6 +57,7 @@ public:
 	bool left;
 	float timer;
 	bool hitPika;
+	bool inside;
 
 	uint32 bonus_fx;
 	Music musica;

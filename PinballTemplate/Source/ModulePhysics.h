@@ -26,7 +26,8 @@ enum CollisionType
 	DIGLETT,
 	PALET,
 	LITTLES,
-	PIKACHU
+	PIKACHU,
+	ENTRY
 };
 class PhysBody
 {

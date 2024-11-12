@@ -431,9 +431,6 @@ public:
 		///////////////////////////////////////////////////////////////////////////////// TEXTURA BELLSPROUT
 
 
-
-
-
 		/*if (powerOn) {
 			mouth->ge
 		}*/
@@ -1317,6 +1314,112 @@ private:
 
 };
 
+class Pikachu : public PhysicEntity
+{
+
+	static constexpr int pikachuCollision[8] = {
+		7, 240,
+		20, 240,
+		20, 260,
+		7, 260
+	};
+
+public:
+	Pikachu(ModulePhysics* physics, int _x, int _y, Module* _listener, Texture2D _texture)
+		: PhysicEntity(physics->CreateChain2(_x, _y, pikachuCollision, 8), _listener)
+		, texture(_texture)
+	{
+		body->collisionType = PIKACHU;
+		timer = 0.0f;
+		toggle = false;
+		hitOn = false;
+		hitTimer = 0.0f;
+		currentFrame = 0;
+		hitFrameTimer = 0.0f;
+		body->bonus = false;
+	}
+
+	void Update() override {
+
+		int x, y;
+		body->GetPhysicPosition(x, y);
+		Rectangle source;
+		Vector2 position{ (float)x + 156, (float)y + 770 };
+		Rectangle dest;
+		Vector2 origin = { ((float)texture.width * SCALE) / 2.0f, ((float)texture.height * SCALE) / 2.0f };
+		float rotation = body->GetRotation() * RAD2DEG;
+
+		// Actualizar temporizador y alternar source cada 0,4 segundos
+		timer += GetFrameTime();
+		if (timer >= 0.8f) {
+			timer = 0.0f; // Reiniciar el temporizador
+			toggle = !toggle;  // Alternar entre true y false
+
+		}
+
+		if (body->hit && !hitOn) {
+			hitOn = true;
+			hitTimer = 0.0f; // Reinicia el temporizador en la colisión
+			
+		}
+
+		// Incrementa el temporizador si está en estado "hit"
+		if (hitOn) {
+
+			hitTimer += GetFrameTime();
+			hitFrameTimer += GetFrameTime();
+
+			if (hitFrameTimer >= 0.5f) {
+				hitFrameTimer = 0.0f;
+				currentFrame++; // Alterna entre 4 frames
+			}
+
+			if (hitTimer >= 2.0f) { // Después de 0.3 segundos, vuelve a la textura normal
+				hitOn = false;
+				body->hit = false; // Reinicia `body->hit` para futuras colisiones
+
+			}
+		}
+
+		// Diglett texture
+		if (toggle && !hitOn) {
+			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 0.0f, 0.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+		else if (hitOn) {
+			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 32.0f, 0.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+			
+			dest = { position.x - 40, position.y - 30, 16.0f * SCALE, 16.0f * SCALE };
+			source = { currentFrame * 16.0f, 16.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+
+		}
+		else if (!toggle && !hitOn) {
+			dest = { position.x - 36, position.y, 16.0f * SCALE, 16.0f * SCALE };
+			source = { 16.0f, 0.0f, 16.0f, 16.0f };
+			DrawTexturePro(texture, source, dest, origin, rotation, WHITE);
+		}
+
+	}
+
+private:
+
+	Texture2D texture;
+	float timer;
+	float hitTimer;
+	int ditrio;
+	bool bonus;
+	bool toggle;
+	bool hitOn;
+	int currentFrame;
+	float hitFrameTimer;
+
+};
+
+
 
 ModuleGame::ModuleGame(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -1346,6 +1449,7 @@ bool ModuleGame::Start()
 	leftDiglettT = LoadTexture("Assets/LeftDiglett.png");
 	rightDiglettT = LoadTexture("Assets/RightDiglett.png");
 	upperRight = LoadTexture("Assets/UpperRight.png");
+	pikachu = LoadTexture("Assets/Pikachu.png");
 
 	bonus_fx = App->audio->LoadFx("Assets/bonus.wav");
 	if (App != nullptr && App->audio != nullptr) {
@@ -1393,6 +1497,8 @@ bool ModuleGame::Start()
 
 	entities.emplace_back(new LeftDiglett(App->physics, 28, 192, this, leftDiglettT));
 	entities.emplace_back(new RightDiglett(App->physics, 136, 192, this, rightDiglettT));
+
+	entities.emplace_back(new Pikachu(App->physics, 5, 30, this, pikachu));
 
 	/*entities.emplace_back(new OffCollision(App->physics, 5, 30, this, offCollisionT));*/
 
@@ -1562,6 +1668,12 @@ void ModuleGame::OnCollision(PhysBody* bodyA, PhysBody* bodyB) {
 	}
 
 	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PALET)) {
+		bodyB->hit = true;
+		App->renderer->score += 500;
+
+	}
+	
+	if ((bodyA->collisionType == POKEBALL && bodyB->collisionType == PIKACHU)) {
 		bodyB->hit = true;
 		App->renderer->score += 500;
 

@@ -47,6 +47,7 @@ public:
 	Texture2D leftDiglettT;
 	Texture2D rightDiglettT;
 	Texture2D upperRight;
+	Texture2D pikachu;
 
 	int score;
 	int lives;

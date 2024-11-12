@@ -25,7 +25,8 @@ enum CollisionType
 	TRIANGLE,
 	DIGLETT,
 	PALET,
-	LITTLES
+	LITTLES,
+	PIKACHU
 };
 class PhysBody
 {

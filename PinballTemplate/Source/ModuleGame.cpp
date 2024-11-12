@@ -1524,6 +1524,7 @@ bool ModuleGame::Start()
 	musica = LoadMusicStream("Assets/music.ogg");
 	PlayMusicStream(musica);
 
+	entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
 
 	entities.emplace_back(new Perimeter(App->physics, 5, 30, this));
 	entities.emplace_back(new UpperCollision(App->physics, 5, 30, this));
@@ -1601,7 +1602,6 @@ update_status ModuleGame::Update()
 	UpdateMusicStream(musica);   
 	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
 
-	entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
 
 	if (lives == 0 && IsKeyDown(KEY_R)) {
 		lives = 3;

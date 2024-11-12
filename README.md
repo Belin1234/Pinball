@@ -49,3 +49,9 @@ Debug Mode:
 ## License
 
 This project is licensed under an unmodified MIT license, which is an OSI-certified license that allows static linking with closed source software. Check [LICENSE](LICENSE) for further details.
+
+
+
+
+
+When we deliver we had a problem with the link and has not left here you have sent it by gmail also those that we passed

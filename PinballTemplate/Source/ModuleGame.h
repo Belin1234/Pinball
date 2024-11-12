@@ -53,6 +53,7 @@ public:
 	bool offCollision;
 
 	uint32 bonus_fx;
+	Music musica;
 
 	vec2<int> ray;
 	bool ray_on;

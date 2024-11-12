@@ -46,6 +46,7 @@ public:
 	Texture2D ditto1;
 	Texture2D ditto2;
 
+	int highScore;
 	int score;
 	int lives;
 	bool offCollision;

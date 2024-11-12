@@ -1572,7 +1572,7 @@ bool ModuleGame::Start()
 	entities.emplace_back(new LittlePoints(App->physics, 60, 78, this));
 
 	
-
+	highScore = 0;
 	score = 0;
 	lives = 3;
 	offCollision = false;
@@ -1599,6 +1599,18 @@ bool ModuleGame::CleanUp()
 update_status ModuleGame::Update()
 {
 	UpdateMusicStream(musica);   
+	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
+
+	entities.emplace_back(new Pokeball(App->physics, 505, 850, this, pokeball));
+
+	if (lives == 0 && IsKeyDown(KEY_R)) {
+		lives = 3;
+		if (score > highScore) {
+			highScore = score;
+		}
+		score = 0;
+		
+	}
 
 	if (IsKeyPressed(KEY_ONE)) {
 
@@ -1606,7 +1618,6 @@ update_status ModuleGame::Update()
 
 	}
 
-	DrawTexturePro(fondo, Rectangle{ 0, 0, (float)fondo.width, (float)fondo.height }, Rectangle{ 5, 30, (float)fondo.width * 3, (float)fondo.height * 3 }, Vector2{ (float)0, (float)0 }, 0, WHITE);
 
 	
 	if (IsKeyPressed(KEY_TWO))
